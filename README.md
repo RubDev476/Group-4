@@ -1,7 +1,6 @@
 # Group 4 (Clon de Reddit)
 Nexts JS (App Router), Firebase y Material UI
-
-sdgsdg
+asfasfasf
 
 - Typescript
 - Sass
