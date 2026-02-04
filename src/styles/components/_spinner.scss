@@ -1,8 +1,8 @@
 @use '../globals/color-vars' as color;
 
 .spinner-container {
-    *height: 100%;
-    *height: calc(100vh - 60px);
+    /*height: 100%;*/
+    /*height: calc(100vh - 60px);*/
     margin-top: 200px;
 
     gap: 40px;
