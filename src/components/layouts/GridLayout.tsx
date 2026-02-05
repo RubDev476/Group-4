@@ -12,7 +12,7 @@ import FormSesion from "../forms/FormSesion";
 import { Spinner } from "../ui";
  
 export default function GridLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const {setNavModal, loadingData, fetchError} = useContext(GlobalContext);
+    const {setNavModal, loadingData, fetchError, navModal} = useContext(GlobalContext);
 
     const path = usePathname();
 
@@ -20,7 +20,7 @@ export default function GridLayout({ children }: Readonly<{ children: React.Reac
         <div className="grid-layout">
             <FormSesion />
 
-            <div className="bg-modal nav-modal w-full flex" onClick={() => setNavModal(false)}></div>
+            <div className={`bg-modal nav-modal w-full flex ${navModal ? 'active' : ''}`} onClick={() => setNavModal(false)}></div>
 
             <AsideLeft />
 

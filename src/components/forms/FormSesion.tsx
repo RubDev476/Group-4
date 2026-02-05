@@ -9,7 +9,7 @@ import { Close } from "@mui/icons-material";
 
 export default function FormSesion() {
     const [formRegister, setFormRegister] = useState(false);
-    const { setFormModal, user, setRefresh } = useContext(GlobalContext);
+    const { setFormModal, user, setRefresh, formModal } = useContext(GlobalContext);
 
     const [succes, setSucces] = useState(false);
     const [errorSubmit, setErrorSubmit] = useState<string>('')
@@ -44,7 +44,7 @@ export default function FormSesion() {
     }
 
     return (
-        <div className="bg-modal login-modal w-full none" onClick={closeLoginModal} data-set='modal'>
+        <div className={`bg-modal login-modal ${formModal ? 'active' : ''} w-full none`} onClick={closeLoginModal} data-set='modal'>
             <div className="form-container bg-color relative w-full">
                 <button className="all-center pointer bg-hover absolute btn-close" onClick={() => setFormModal(false)}>
                     <Close className="icon" />

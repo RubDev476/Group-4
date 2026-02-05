@@ -111,17 +111,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }
 
     useEffect(() => {
-        const loginModal = document.querySelector('.bg-modal.login-modal') as HTMLElement;
-        //const asideLeft = document.querySelector('ASIDE.left') as HTMLElement;
-        const bgNavModal = document.querySelector('.bg-modal.nav-modal') as HTMLElement;
-        const body = document.querySelector('BODY') as HTMLElement;
-
-        loginModal.classList.toggle('active', formModal);
-        //asideLeft.classList.toggle('flex', !navModal);
-        //asideLeft.classList.toggle('none', !navModal);
-        bgNavModal.classList.toggle('active', navModal);
-
-        body.style.overflowY = (navModal || formModal) ? 'hidden' : 'auto';
+        document.body.classList.toggle('no-scrollY', navModal || formModal);
     }, [navModal, formModal])
 
     return (
