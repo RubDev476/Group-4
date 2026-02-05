@@ -32,7 +32,7 @@ export default function AsideLeft() {
 
     const path = usePathname();
     
-    const { user } = useContext(GlobalContext);
+    const { user, navModal } = useContext(GlobalContext);
 
     useEffect(() => {
         if(user) fetchRecentActivity(user.uid);
@@ -46,7 +46,7 @@ export default function AsideLeft() {
     }
 
     return (
-        <aside className="left none bg-color scroll-bar-style">
+        <aside className={`left ${navModal ? 'flex' : 'none'} bg-color scroll-bar-style`}>
             <Link href='/' className={`flex align-center justify-start text-color w-full bg-hover ${path === '/' ? 'bg-path' : ''}`}>
                 {path === '/' ? (
                     <Home className="icon icon-path" />

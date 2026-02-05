@@ -69,7 +69,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             const refreshData = async () => {
                 await handleFetch();
 
-                setRefresh({...refresh, refresh: false});
+                //setRefresh({...refresh, refresh: false});
+                setRefresh(prev => ({...prev, refresh: false}));
                     
                 if(refresh.redirectTo !== '') router.push(refresh.redirectTo);
             };
@@ -96,8 +97,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     const handleFetch = async () => {
         try {
-            await getData();
-            await getPopulars();
+            //await getData();
+            //await getPopulars();
+
+            await Promise.all([getData(), getPopulars()]);
         } catch (error) {
             console.log(error);
 
@@ -109,13 +112,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const loginModal = document.querySelector('.bg-modal.login-modal') as HTMLElement;
-        const asideLeft = document.querySelector('ASIDE.left') as HTMLElement;
+        //const asideLeft = document.querySelector('ASIDE.left') as HTMLElement;
         const bgNavModal = document.querySelector('.bg-modal.nav-modal') as HTMLElement;
         const body = document.querySelector('BODY') as HTMLElement;
 
         loginModal.classList.toggle('active', formModal);
-        asideLeft.classList.toggle('flex', !navModal);
-        asideLeft.classList.toggle('none', !navModal);
+        //asideLeft.classList.toggle('flex', !navModal);
+        //asideLeft.classList.toggle('none', !navModal);
         bgNavModal.classList.toggle('active', navModal);
 
         body.style.overflowY = (navModal || formModal) ? 'hidden' : 'auto';
