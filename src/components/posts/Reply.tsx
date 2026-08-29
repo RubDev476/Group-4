@@ -28,7 +28,8 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
 
     useEffect(() => {
         if (allUsers) {
-            const getUser = allUsers.get(reply.idUser);
+            //const getUser = allUsers.get(reply.idUser);
+            const getUser = allUsers.find((user: any) => user.uid === reply.idUser);
 
             setUserReply(getUser);
         }

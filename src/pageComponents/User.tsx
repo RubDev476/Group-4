@@ -12,6 +12,7 @@ import type { AllPostsType } from "@/src/types";
 import type { UserProps } from "../types/components-props";
  
 import firebase from "@/src/firebase/firebase";
+import { USERS } from "../fakeData";
 
 export default function User({ userName }: UserProps) {
     const [loadingPageUser, setLoadingPageUser] = useState(true);
@@ -22,7 +23,8 @@ export default function User({ userName }: UserProps) {
 
     useEffect(() => {
         const getDataUser = async () => {
-            const getUser = await firebase.getData('users', userName);
+            //const getUser = await firebase.getData('users', userName);
+            const getUser = USERS.find(user => user.displayName === userName);
 
             if(!getUser) return setLoadingPageUser(false);
 

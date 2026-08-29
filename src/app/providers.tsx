@@ -11,6 +11,7 @@ import { User } from 'firebase/auth';
 
 import firebase from '../firebase/firebase';
 import useAutenticacion from '../hooks/useAuthUser';
+import { POSTS, USERS } from '../fakeData';
 
 const defaultValues: GlobalContextType = {
     navModal: false,
@@ -39,9 +40,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const [loadingData, setLoadingData] = useState(true);
     const [loadingPopular, setLoadingPopular] = useState(true);
 
-    const [popularUsers, setPopularUsers] = useState<DocumentData[]>([]);
+    const [popularUsers, setPopularUsers] = useState<any[]>([]);
     const [allPosts, setAllPosts] = useState<AllPostsType[]>([]);
-    const [allUsers, setAllUsers] = useState<AllUsersFetch>(null);
+    const [allUsers, setAllUsers] = useState<any>(null);
     const [user, setUser] = useState<User | null>(null);
     const [fetchError, setFetchError] = useState(false);
 
@@ -80,9 +81,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }, [refresh]);    
 
     const getPopulars = async () => {
-        const res = await firebase.getPopularUsers();
+        //const res = await firebase.getPopularUsers();
 
-        setPopularUsers(res);
+        setPopularUsers(USERS);
         setLoadingPopular(false);
     }
 
@@ -90,8 +91,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         const res = await firebase.getAllPosts();
         const users = await firebase.getAllUsers();
         
-        setAllPosts(res);
-        setAllUsers(users);
+        setAllPosts(POSTS);
+        setAllUsers(USERS);
         setLoadingData(false);
     }
 

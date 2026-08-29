@@ -7,7 +7,7 @@ export default function AvatarImg({ size, fontSize, user }: AvatarProps) {
 
     return (
         <>
-            {(user.photoURL?.charAt(0) === '#') && (
+            {(user.photoURL?.charAt(0) === '#') ? (
                 <Avatar
                     sx={{
                         width: size,
@@ -19,9 +19,7 @@ export default function AvatarImg({ size, fontSize, user }: AvatarProps) {
                 >
                     {initialLetter}
                 </Avatar>
-            )}
-
-            {(user.photoURL?.includes('https')) && (
+            ) : (
                 <Avatar
                     alt="img-user"
                     src={user.photoURL}

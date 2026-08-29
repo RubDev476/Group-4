@@ -20,9 +20,9 @@ class Firebase {
         if (initializeApp) {
             const app = initializeApp(firebaseConfig);
 
-            this.auth = getAuth(app);
-            this.storage = getStorage(app);
-            this.db = getFirestore(app);
+            //this.auth = getAuth(app);
+            //this.storage = getStorage(app);
+            //this.db = getFirestore(app);
         }
     }
 

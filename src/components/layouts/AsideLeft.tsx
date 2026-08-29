@@ -25,24 +25,25 @@ import firebase from "@/src/firebase/firebase";
 import { GlobalContext } from "@/src/app/providers";
 
 import AccordionPopulars from "./AccordionPopulars";
+import { USERS } from "@/src/fakeData";
 
 export default function AsideLeft() {
     const [showMoreTopics, setShowTopics] = useState(false);
-    const [recentActivity, setRecentActivity] = useState<DocumentData>([]);
+    const [recentActivity, setRecentActivity] = useState<any>(USERS);
 
     const path = usePathname();
     
     const { user, navModal } = useContext(GlobalContext);
 
     useEffect(() => {
-        if(user) fetchRecentActivity(user.uid);
-        if(!user) setRecentActivity([]);
+        //if(user) fetchRecentActivity(user.uid);
+        //if(!user) setRecentActivity([]);
     }, [user])
 
     const fetchRecentActivity = async (uid: string) => {
-        const getRecentActivity = await firebase.getRecentActivity(uid);
+        //const getRecentActivity = await firebase.getRecentActivity(uid);
 
-        setRecentActivity(getRecentActivity ? getRecentActivity : []);
+        //setRecentActivity(getRecentActivity ? getRecentActivity : []);
     }
 
     return (
@@ -63,7 +64,7 @@ export default function AsideLeft() {
 
             <hr />
 
-            {(recentActivity.length > 0 && user) && (
+            {(recentActivity.length > 0 /*&& user*/) && (
                 <>
                     <Accordion className='w-full text-color acordeon' defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none', "::before": { display: 'none' } }}>
                         <AccordionSummary
@@ -76,7 +77,7 @@ export default function AsideLeft() {
                         </AccordionSummary>
 
                         <AccordionDetails className='acordeon-items-container' sx={{ padding: '0' }}>
-                            {recentActivity.map((user: DocumentData) => (
+                            {recentActivity.map((user: any) => (
                                 <Link key={user.uid} href={`/u/${user.displayName}`} className="flex align-center justify-start text-color w-full bg-hover">
                                     <AvatarImg
                                         size={30}

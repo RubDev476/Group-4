@@ -8,7 +8,7 @@ export interface GlobalContextType {
     setFormModal: React.Dispatch<React.SetStateAction<boolean>>;
     allPosts: AllPostsType[];
     setAllPosts: React.Dispatch<React.SetStateAction<AllPostsType[]>>;
-    allUsers: AllUsersFetch;
+    allUsers: any;
     loadingData: boolean;
     popularUsers: DocumentData[];
     loadingPopular: boolean;

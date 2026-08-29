@@ -14,11 +14,12 @@ import type { CommentsContainerProps } from "@/src/types/components-props";
 export default function CommentsContainer({ commentDoc, setCommentId, currentPost, commentId, resetFormComment}: CommentsContainerProps) {
     const { allUsers } = useContext(GlobalContext);
 
-    const [userPost, setUserPost] = useState<DocumentData | undefined>(undefined);
+    const [userPost, setUserPost] = useState<any>(undefined);
 
     useEffect(() => {
         if (allUsers) {
-            const getUser = allUsers.get(commentDoc.idUser);
+            //const getUser = allUsers.get(commentDoc.idUser);
+            const getUser = allUsers.find((user: any) => user.uid === commentDoc.idUser);
 
             setUserPost(getUser);
         }

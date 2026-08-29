@@ -9,14 +9,14 @@ import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 function useAutenticacion() {
     const [ userAuth, setUserAuth] = useState<User | null>(null);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
         const unsuscribe = onAuthStateChanged(auth, (user) => setUserAuth(user));
 
         return () => unsuscribe();
-    }, []);
+    }, []);*/
 
     return userAuth;
 }
