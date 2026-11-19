@@ -162,7 +162,7 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                             user={userReply}
                         />
 
-                        <span className='user-name'>{`u/${userReply.displayName}`} </span>
+                        <span className='user-name'>{`@${userReply.displayName}`} </span>
                     </Link>
 
                     <p className='time text-opacity relative'>{formatDate(reply.date)}</p>
@@ -199,7 +199,7 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                         {!edit && (
                             <div className="relative like all-center pointer bg-hover" onClick={likeToggle}>
                                 {(user && reply.likes.includes(user.uid)) ? (
-                                    <Favorite className='icon primary-color' />
+                                    <Favorite className='icon like-color' />
                                 ) : (
                                     <FavoriteBorder className='icon' />
                                 )}

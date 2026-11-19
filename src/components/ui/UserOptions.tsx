@@ -32,14 +32,13 @@ interface ColoresProps extends TooltipProps {
 
 const CustomTooltip = styled(({ className, themeMode, ...props }: ColoresProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme, themeMode }) => ({
-    /*[`& .${tooltipClasses.arrow}`]: {
-        color: themeColors.color[themeMode]
-    },*/
+))(({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-        color: '#fff',
-        backgroundColor: '#ff2600',
-        fontSize: theme.typography.pxToRem(14),
+        color: '#FFFFFF',
+        backgroundColor: '#0D9488',
+        borderRadius: 8,
+        fontSize: theme.typography.pxToRem(13),
+        fontWeight: 500,
     },
 }));
 
@@ -89,8 +88,10 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
                         sx: {
                             backgroundColor: themeColors.bgColor[theme],
                             color: themeColors.color[theme],
+                            border: `1px solid ${themeColors.border[theme]}`,
+                            borderRadius: '14px',
                             overflow: 'visible',
-                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            filter: 'drop-shadow(0px 8px 24px rgba(0,0,0,0.22))',
                             mt: 1.5,
                             '& .MuiAvatar-root': {
                                 width: 32,
@@ -123,7 +124,7 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
                         user={user}
                     />
 
-                    {'u/' + user.displayName}
+                    {'@' + user.displayName}
                 </MenuItem>
 
                 <Divider />

@@ -72,7 +72,7 @@ export default function EditPostForm({ idPost }: PostProps) {
                         user={user}
                     />
 
-                    <span>{'u/' + user?.displayName} </span>
+                    <span>{'@' + user?.displayName} </span>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>

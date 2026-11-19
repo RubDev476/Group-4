@@ -92,8 +92,10 @@ export default function PostOptions({idPost}: PostProps) {
                                 sx: {
                                     backgroundColor: themeColors.bgColor[theme],
                                     color: themeColors.color[theme],
+                                    border: `1px solid ${themeColors.border[theme]}`,
+                                    borderRadius: '14px',
                                     overflow: 'visible',
-                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                    filter: 'drop-shadow(0px 8px 24px rgba(0,0,0,0.22))',
                                     mt: 1.5,
                                     '& .MuiAvatar-root': {
                                         width: 32,

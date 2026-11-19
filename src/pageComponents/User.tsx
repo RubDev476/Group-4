@@ -43,32 +43,45 @@ export default function User({ userName }: UserProps) {
 
     if(!loadingPageUser && !user) return <NotFound message="User not found" />;
 
+    const totalLikes = posts.reduce((acc, item) => acc + (item.posts.likes?.length || 0), 0);
+
     if(!loadingPageUser && user) return (
         <div className="user-main-container w-full">
-            <div className="img-name-container flex justify-start align-center">
-                <AvatarImg
-                    size={100}
-                    fontSize={70}
-                    user={user}
-                />
+            <div className="profile-banner-card">
+                <div className="profile-cover" />
 
-                <h4>{'u/' + user.displayName}</h4>
+                <div className="profile-body">
+                    <div className="img-name-container flex justify-start">
+                        <div className="avatar-ring">
+                            <AvatarImg
+                                size={96}
+                                fontSize={44}
+                                user={user}
+                            />
+                        </div>
+
+                        <h4 className="logo-font">{'@' + user.displayName}</h4>
+                    </div>
+
+                    <div className="profile-meta">
+                        <span className="meta-pill">{'Member since ' + user.dateRegister}</span>
+                        <span className="meta-pill">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+                        <span className="meta-pill">{totalLikes} {totalLikes === 1 ? 'like' : 'likes'}</span>
+                    </div>
+                </div>
             </div>
 
-            <p>{'Member since: ' + user.dateRegister}</p>
-
-            <hr />
-
             {posts.length > 0 ? (
-                <h5>{'Posts by u/' + user.displayName}</h5>
-
+                <h5 className="logo-font">{'Published by @' + user.displayName}</h5>
             ) : (
-                <h5>{'u/' + user.displayName + " hasn't published anything yet"}</h5>
+                <h5 className="logo-font">{'@' + user.displayName + " hasn't published anything yet"}</h5>
             )}
 
-            {posts.map((post: AllPostsType) => (
-                <Post key={post.posts.id} postData={post.posts} creator={post.user} />
-            ))}
+            <div className="user-posts-grid">
+                {posts.map((post: AllPostsType) => (
+                    <Post key={post.posts.id} postData={post.posts} creator={post.user} />
+                ))}
+            </div>
         </div>
     )
 }

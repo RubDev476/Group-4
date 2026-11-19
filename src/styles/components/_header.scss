@@ -2,93 +2,226 @@
 @use '../globals/color-vars' as color;
 
 header {
-    padding: 0 3%;
+    padding: 0 16px;
     justify-content: space-between;
-    height: 60px;
+    height: 64px;
     top: 0;
+    left: 0;
     position: fixed;
     z-index: 900;
-    
-    div {
-        gap: 13px;
+    background-color: var(--mf-header-bg) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--mf-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 
+    .header-inner {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .header-left,
+    .header-right {
+        gap: 10px;
+    }
+
+    .header-left {
         .logo-mobile {
-            @include mixin.logo(32px, -3px);
-    
-            padding: 0 10px;
+            @include mixin.logo(22px);
         }
 
         .logo-desktop {
             display: none;
         }
 
-        .icon {
-            font-size: 35px;
+        .header-nav {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-left: 14px;
+            padding-left: 16px;
+            border-left: 1px solid var(--mf-border);
+
+            a,
+            button {
+                padding: 7px 14px;
+                border-radius: var(--mf-radius-pill);
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--mf-text-secondary);
+                background: transparent;
+                transition: background-color 0.16s ease, color 0.16s ease;
+
+                &:hover {
+                    background-color: var(--mf-surface-hover);
+                    color: var(--mf-text);
+                }
+
+                &.active {
+                    color: var(--mf-primary);
+                    background-color: var(--mf-primary-soft);
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    .icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--mf-radius-pill);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--mf-text-secondary);
+        background-color: transparent;
+        transition: background-color 0.18s ease, color 0.18s ease;
+
+        &:hover {
+            background-color: var(--mf-surface-hover);
+            color: var(--mf-text);
         }
 
-        button {
-            @include mixin.btnPrimary();
-    
-            padding: 8px 10px;
-        }    
+        .icon {
+            font-size: 22px;
+        }
+    }
+
+    .theme-container {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--mf-radius-pill);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--mf-text-secondary);
+        transition: background-color 0.18s ease, color 0.18s ease;
+
+        &:hover {
+            background-color: var(--mf-surface-hover);
+            color: var(--mf-primary);
+        }
+
+        svg {
+            font-size: 20px;
+        }
+    }
+
+    .btn-create-header {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 15px;
+        border-radius: var(--mf-radius-pill);
+        font-size: 13.5px;
+        font-weight: 600;
+        background-color: var(--mf-primary-soft);
+        color: var(--mf-primary);
+        transition: background-color 0.18s ease, color 0.18s ease;
+
+        &:hover {
+            background-color: var(--mf-primary);
+            color: var(--mf-primary-text);
+        }
+
+        svg {
+            font-size: 18px;
+        }
+    }
+
+    .btn-signin {
+        @include mixin.btnPrimary();
+        padding: 9px 18px;
+        font-size: 14px;
+        white-space: nowrap;
     }
 
     form {
-        border-radius: 50px;
+        border-radius: var(--mf-radius-pill);
         width: 100%;
+        max-width: 420px;
         height: 40px;
-        gap: 10px;
-        margin-left: 10px;
         z-index: 30;
         display: none;
+        border: 1px solid var(--mf-border);
+        background-color: var(--mf-input-bg);
+        transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+
+        &:focus-within,
+        &.shadow {
+            background-color: var(--mf-input-focus-bg);
+            border-color: var(--mf-primary);
+            box-shadow: 0 0 0 3px var(--mf-primary-soft);
+        }
 
         label {
-            left: 15px;
+            left: 14px;
+            color: var(--mf-text-muted);
+            pointer-events: none;
 
             .icon-label {
-                font-size: 25px;
+                font-size: 19px;
             }
         }
 
         input {
-            font-size: 18px;
-            border-radius: 50px;
-            padding: 0 20px 0 50px;
+            font-size: 14px;
+            border-radius: var(--mf-radius-pill);
+            padding: 0 18px 0 40px;
             z-index: 50;
             background-color: transparent;
+            color: var(--mf-text);
         }
     }
 }
 
 @media screen and (min-width: 480px) {
     header {
-        div {
+        padding: 0 24px;
+
+        .header-left {
             .logo-mobile {
                 display: none;
             }
 
             .logo-desktop {
-                @include mixin.logo(32px, -3px);
-    
-                padding: 0 10px;
-
-                display: block;
+                @include mixin.logo(23px);
+                display: inline-flex;
             }
+        }
+
+        .btn-create-header {
+            display: inline-flex;
+        }
+    }
+}
+
+@media screen and (min-width: 900px) {
+    header {
+        .header-left .header-nav {
+            display: inline-flex;
+        }
+
+        .menu-toggle-btn {
+            display: none;
         }
     }
 }
 
 @media screen and (min-width: 1024px) {
     header {
-        div {
-            .icon {
-                display: none;
-            }
+        .search-toggle-btn {
+            display: none;
         }
 
         form {
             display: flex;
-            width: 50%;
+            flex: 1;
         }
     }
 }

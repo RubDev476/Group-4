@@ -10,13 +10,14 @@
     box-sizing: border-box;
 
     &::selection {
-        background-color: color.$primary;
-        color: color.$text-color-dark;
+        background-color: var(--mf-primary);
+        color: var(--mf-primary-text);
     }
 }
 
 a {
     text-decoration: none;
+    color: inherit;
 }
 
 input,
@@ -26,51 +27,35 @@ hr {
     border: none;
 }
 
-body {
-    background-color: color.$body-color;
-    color: color.$text-color;
+input,
+textarea {
+    color: var(--mf-text);
+
+    &::placeholder {
+        color: var(--mf-text-muted);
+    }
 }
 
-[data-theme='dark'] body {
-    background-color: color.$body-color-dark;
-    color: color.$text-color-dark;
+body {
+    background-color: var(--mf-bg);
+    color: var(--mf-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    line-height: 1.5;
 }
 
 hr {
     width: 100%;
+    height: 1px;
     min-height: 1px;
-    background-color: color.$border-line;
-}
-
-[data-theme='dark'] hr{
-    background-color: color.$border-line-dark;
+    background-color: var(--mf-border);
+    margin: 12px 0;
 }
 
 .bg-modal.active {
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(6, 12, 16, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     position: fixed;
     left: 0;
-}
-
-@media screen and (min-width: 720px) {
-    [data-theme='dark'] main {
-        border-right: solid 1px color.$border-line-dark;       
-    }
-
-    main {
-        border-right: solid 1px color.$border-line;          
-    }
-}
-
-@media screen and (min-width: 1024px) {
-    [data-theme='dark'] main {
-        border-left: solid 1px color.$border-line-dark;
-        border-right: solid 1px color.$border-line-dark;       
-    }
-
-    main {
-        border-left: solid 1px color.$border-line;
-        border-right: solid 1px color.$border-line;          
-    }
 }

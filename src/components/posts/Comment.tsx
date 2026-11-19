@@ -154,7 +154,7 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                             user={userPost}
                         />
 
-                        <span className='user-name'>{`u/${userPost.displayName}`} </span>
+                        <span className='user-name'>{`@${userPost.displayName}`} </span>
                     </Link>
 
                     <p className='time text-opacity relative'>{formatDate(commentDoc.date)}</p>
@@ -189,7 +189,7 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                         <>
                             <div className="relative like all-center pointer bg-hover" onClick={likeToggle}>
                                 {(user && commentDoc.likes.includes(user.uid)) ? (
-                                    <Favorite className='icon primary-color' />
+                                    <Favorite className='icon like-color' />
                                 ) : (
                                     <FavoriteBorder className='icon' />
                                 )}

@@ -2,6 +2,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 import Post from "@/src/pageComponents/Post";
 import firebase from '@/src/firebase/firebase';
+import { POSTS } from '@/src/fakeData';
 
 import type { Params, DynamicParams } from '@/src/types/components-props';
 
@@ -10,13 +11,24 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { id } = await params;
-    const post = await firebase.getData('posts', id);
 
-    if(!post) return {title: 'Post Not Found'}
+    const fakePost = POSTS.find(item => item.posts.id === id)?.posts;
+    let post: any = fakePost;
+
+    if (!post) {
+        try {
+            post = await firebase.getData('posts', id);
+        } catch {
+            post = null;
+        }
+    }
+
+    if (!post) return { title: 'Post Not Found | myfeed' };
 
     return {
-        title: 'p/' + post.title,
-    }
+        title: `${post.title} | myfeed`,
+        description: post.description || 'Read this post and join the discussion on myfeed.',
+    };
 }
 
 export default async function Page({ params }: Params) {

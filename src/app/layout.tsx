@@ -5,12 +5,12 @@ import { Header, GridLayout } from "../components/layouts";
 import '../styles/index.scss';
 
 export const metadata: Metadata = {
-    title: "Group 4",
-    description: "Explore, share, and express what you want with everyone",
+    title: "myfeed — Your interests, zero noise",
+    description: "Explore, share, and discuss in the communities you choose — without algorithmic noise.",
     icons: [
-        {rel: 'icon', url: '/icons/favicon-16x16.png', type: 'image/svg+xml'},
-        {rel: 'icon', url: '/icons/favicon-32x32.png', type: 'image/svg+xml'},
-        {rel: 'icon', url: '/icons/apple-touch-icon.png', type: 'image/svg+xml'},
+        {rel: 'icon', url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png'},
+        {rel: 'icon', url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png'},
+        {rel: 'apple-touch-icon', url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png'},
     ]
 }; 
 

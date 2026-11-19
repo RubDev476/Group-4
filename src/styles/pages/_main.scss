@@ -1,4 +1,57 @@
 .main-container {
-    margin: auto;
-    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.feed-toolbar {
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .feed-heading {
+        gap: 10px;
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--mf-text);
+        }
+
+        .feed-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 10px;
+            border-radius: var(--mf-radius-pill);
+            background-color: var(--mf-primary-soft);
+            color: var(--mf-primary);
+            font-size: 12px;
+            font-weight: 700;
+        }
+    }
+}
+
+.feed-posts {
+    display: grid;
+    gap: 20px;
+
+    &.feed-grid {
+        grid-template-columns: minmax(0, 1fr);
+
+        @media screen and (min-width: 900px) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+
+.empty-feed-card {
+    background-color: var(--mf-surface);
+    border: 1px solid var(--mf-border);
+    border-radius: var(--mf-radius-lg);
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--mf-text-muted);
+    font-size: 15px;
 }

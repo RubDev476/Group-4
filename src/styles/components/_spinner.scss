@@ -1,48 +1,28 @@
 @use '../globals/color-vars' as color;
 
 .spinner-container {
-    /*height: 100%;*/
-    /*height: calc(100vh - 60px);*/
-    margin-top: 200px;
-
-    gap: 40px;
-
-    $spinner-size: 160px;
-    $secondary-color: #b1b1b1;
+    margin-top: 120px;
+    gap: 18px;
 
     .loader {
-        width: $spinner-size;
-        height: $spinner-size;
-        display: inline-block;
-        position: relative;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 3px solid var(--mf-border-strong);
+        border-top-color: var(--mf-primary);
+        animation: mf-spin 0.75s linear infinite;
     }
 
-    .loader::after,
-    .loader::before {
-        content: '';
-        box-sizing: border-box;
-        width: $spinner-size;
-        height: $spinner-size;
-        border: 6px solid $secondary-color;
-        background-color: $secondary-color;
-        position: absolute;
-        left: 0;
-        top: 0;
-        animation: rotation 2s ease-in-out infinite alternate;
+    h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--mf-text-muted);
     }
 
-    .loader::after {
-        border-color: color.$primary;
-        background-color: color.$primary;
-        animation-direction: alternate-reverse;
-    }
-
-    @keyframes rotation {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
+    @keyframes mf-spin {
+        to {
             transform: rotate(360deg);
         }
     }

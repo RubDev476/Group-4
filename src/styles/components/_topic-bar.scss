@@ -1,0 +1,164 @@
+.topic-bar {
+    position: sticky;
+    top: 64px;
+    z-index: 400;
+    background-color: var(--mf-header-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--mf-border);
+
+    .topic-bar-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .topic-scroller-wrap {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .topic-pills {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        width: 100%;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+        scroll-behavior: auto;
+        padding: 2px 4px;
+        cursor: grab;
+        user-select: none;
+
+        &.dragging {
+            cursor: grabbing;
+        }
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    .topic-scroll-arrow {
+        display: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--mf-radius-pill);
+        background-color: var(--mf-surface);
+        border: 1px solid var(--mf-border-strong);
+        color: var(--mf-text);
+        box-shadow: var(--mf-shadow-md);
+        transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+
+        svg {
+            font-size: 20px;
+        }
+
+        &:hover {
+            background-color: var(--mf-primary);
+            border-color: var(--mf-primary);
+            color: var(--mf-primary-text);
+        }
+
+        &.left {
+            left: 0;
+        }
+
+        &.right {
+            right: 0;
+        }
+
+        @media screen and (min-width: 768px) {
+            display: inline-flex;
+        }
+    }
+
+    .topic-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--mf-radius-pill);
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--mf-text-secondary);
+        background-color: var(--mf-surface);
+        border: 1px solid var(--mf-border);
+        transition: all 0.16s ease;
+        flex-shrink: 0;
+        -webkit-user-drag: none;
+
+        .pill-icon {
+            font-size: 16px;
+            color: var(--mf-text-muted);
+            transition: color 0.16s ease;
+        }
+
+        &:hover {
+            border-color: var(--mf-border-strong);
+            background-color: var(--mf-surface-hover);
+            color: var(--mf-text);
+
+            .pill-icon {
+                color: var(--mf-primary);
+            }
+        }
+
+        &.active {
+            background-color: var(--mf-primary);
+            border-color: var(--mf-primary);
+            color: var(--mf-primary-text);
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(13, 148, 136, 0.24);
+
+            .pill-icon {
+                color: var(--mf-primary-text);
+            }
+        }
+    }
+
+    .topic-all-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--mf-radius-pill);
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: var(--mf-primary);
+        background-color: var(--mf-primary-soft);
+        border: 1px solid transparent;
+        transition: all 0.16s ease;
+        flex-shrink: 0;
+
+        .pill-icon {
+            font-size: 17px;
+        }
+
+        &:hover {
+            background-color: var(--mf-primary);
+            color: var(--mf-primary-text);
+        }
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .topic-bar .topic-bar-inner {
+        padding: 10px 24px;
+    }
+}

@@ -26,7 +26,11 @@ export default function FormLogin({ select, setFormRegister, blur, setErrorSubmi
 
     return ( 
         <>
-            <h3>Sign in</h3>
+            <div className="modal-brand logo-font">
+                <span>my<span className="logo-accent">feed</span></span>
+            </div>
+            <h3 className="logo-font">Welcome back</h3>
+            <p className="modal-subtitle">Sign in to continue to your feed.</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/*This tag helps me correct the error when changing forms, where the input values ​​were mixed, that's why the other registration form does not have this 'fieldset' tag...*/}
@@ -67,7 +71,7 @@ export default function FormLogin({ select, setFormRegister, blur, setErrorSubmi
                     </div>
                 </fieldset>
 
-                <p>Is this your first time in group 4? <span className="pointer" onClick={() => setFormRegister(true)}>Register</span></p>
+                <p>First time on myfeed? <span className="pointer" onClick={() => setFormRegister(true)}>Create an account</span></p>
 
                 <div className="action-container relative text-center">
                     {errorSubmit !== '' && <span className="error-submit absolute w-full">{errorSubmit}</span>}

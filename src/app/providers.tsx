@@ -116,7 +116,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }, [navModal, formModal])
 
     return (
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="dark" enableSystem={false}>
             <GlobalContext.Provider
                 value={{
                     navModal, 

@@ -49,7 +49,7 @@ export default function AccordionPopulars() {
                                     user={user}
                                 />
 
-                                <span>{`u/${user.displayName}`}</span>
+                                <span>{`@${user.displayName}`}</span>
                             </Link>
                         ))}
                     </>

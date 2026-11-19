@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Main from "../pageComponents/Main";
 
 export const metadata: Metadata = {
-    title: "Group 4 | Explore, share, and express",
+    title: "myfeed | Your interests, zero noise",
     description: "Explore, share, and express what you want with everyone",
 }; 
 

@@ -1,35 +1,28 @@
 @use '../globals/mixins' as mixin;
 
 .not-found-container {
-    .error-title {
-        @include mixin.logo(62px, -3px);
+    @include mixin.cardSurface();
+    padding: 56px 24px;
+    margin: 24px auto;
+    max-width: 560px;
+    gap: 12px;
 
-        padding: 0 30%;
-        margin: 45px 0;
+    .error-title {
+        font-size: 64px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin: 0;
+        line-height: 1;
+        color: var(--mf-text);
+
+        span {
+            color: var(--mf-primary);
+        }
     }
 
     p {
-        font-size: 25px;
+        font-size: 16px;
+        color: var(--mf-text-muted);
         margin: 0;
-    }
-}
-
-@media screen and (min-width: 480px) {
-    .not-found-container {
-        .error-title {    
-            padding: 0 10%;
-        }
-    }
-}
-
-@media screen and (min-width: 1500px) {
-    .not-found-container {
-        .error-title {
-            @include mixin.logo(82px, -3px);
-        }
-    
-        p {
-            font-size: 35px;
-        }
     }
 }

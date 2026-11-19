@@ -1,44 +1,69 @@
 @use 'color-vars' as color;
 
-@mixin logo($size, $left) {
-    color: color.$primary;
-    letter-spacing: -3px;
+@mixin logo($size) {
     font-size: $size;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--mf-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1;
 
-    span {
-        color: #fff;
-        position: relative;
+    .logo-mark {
+        width: calc($size * 1.05);
+        height: calc($size * 1.05);
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--mf-primary) 0%, #0EA5E9 100%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.28);
+        flex-shrink: 0;
+    }
 
-        &::before {
-            content: '';
-            height: $size;
-            width: $size;
-            background-color: color.$primary;
-            position: absolute;
-            z-index: -1;
-            transform: rotate(27deg);
-            left: $left;
-        }
+    .logo-accent {
+        color: var(--mf-primary);
     }
 }
 
 @mixin btnPrimary() {
-    background-color: color.$primary;
-    border-radius: 20px;
-    color: color.$text-color-dark;
+    background-color: var(--mf-primary);
+    border-radius: var(--mf-radius-pill);
+    color: var(--mf-primary-text);
+    font-weight: 600;
+    transition: background-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
 
     &:hover {
-        background-color: color.$primary-hover;
+        background-color: var(--mf-primary-hover);
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+    }
+
+    &:active {
+        transform: scale(0.98);
     }
 }
 
+@mixin cardSurface() {
+    background-color: var(--mf-surface);
+    border: 1px solid var(--mf-border);
+    border-radius: var(--mf-radius-md);
+    box-shadow: var(--mf-shadow-sm);
+}
+
 @mixin headerArticle($user-size, $time-size) {
-    gap: 10px;
+    gap: 8px;
 
     .user {
-        gap: 6px;
-        font-weight: 500;
+        gap: 8px;
+        font-weight: 600;
         font-size: $user-size;
+        transition: color 0.15s ease;
+
+        &:hover {
+            color: var(--mf-primary);
+        }
 
         img {
             border-radius: 100%;
@@ -46,26 +71,22 @@
     }
 
     .time {
-        margin: 0 0 0 15px;
+        margin: 0;
+        font-weight: 400;
+        font-size: $time-size;
+        color: var(--mf-text-muted);
+        display: inline-flex;
+        align-items: center;
 
         @media screen and (min-width: 480px) {
-            margin: 0 0 0 20px;
-        }
-        
-        & {
-            font-weight: 400;
-            font-size: $time-size;
-        }
+            margin-left: 4px;
 
-        &::before {
-            content: '';
-            width: 5px;
-            height: 5px;
-            position: absolute;
-            top: 5px;
-            left: -10px;
-            background-color: color.$primary;
-            border-radius: 100%;
+            &::before {
+                content: '·';
+                margin-right: 8px;
+                font-weight: 700;
+                color: var(--mf-text-muted);
+            }
         }
     }
 }

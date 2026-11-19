@@ -85,21 +85,37 @@ export default function Post({ postData, creator }: PostComponentProps) {
         router.push('/p/' + postData.id);
     }
 
-    return (
-        <>
-            <article className={`w-full relative ${(path === '/' || path.includes('/u/')) ? 'bg-hover' : ''}`}>
-                {(path === '/' || path.includes('/u/')) && <Link href={`/p/${postData.id}`} className='link-post absolute w-full h-full'></Link>}
+    const isLiked = Boolean(user && postData.likes.includes(user.uid));
+    const isDetailView = path.includes('/p/');
+    const isFeedCard = !isDetailView;
 
+    return (
+        <article className={`w-full relative ${isFeedCard ? 'post-card-feed' : 'post-card-detail'}`}>
+            {isFeedCard && <Link href={`/p/${postData.id}`} className='link-post absolute w-full h-full' aria-label={postData.title}></Link>}
+
+            {isFeedCard && postData.imgUrl && (
+                <div className="post-cover relative w-full overflow-h">
+                    <Image
+                        src={postData.imgUrl}
+                        alt={postData.title}
+                        fill
+                        className="post-cover-img"
+                        priority
+                    />
+                </div>
+            )}
+
+            <div className="post-body flex direction-column">
                 <div className="header-post relative flex justify-between">
                     <div className='flex info-creator'>
                         <Link href={`/u/${creator.displayName}`} className="user text-color flex align-center">
                             <AvatarImg
-                                size={30}
-                                fontSize={20}
+                                size={isDetailView ? 38 : 30}
+                                fontSize={isDetailView ? 18 : 14}
                                 user={creator}
                             />
 
-                            <span className='user-name'>{`u/${creator.displayName}`} </span>
+                            <span className='user-name'>{`@${creator.displayName}`}</span>
                         </Link>
 
                         <p className='time text-opacity relative'>{formatDate(postData.date)}</p>
@@ -110,15 +126,19 @@ export default function Post({ postData, creator }: PostComponentProps) {
                     )}
                 </div>
 
-                <h3>{postData.title}</h3>
+                <h3 className="logo-font">{postData.title}</h3>
 
-                {(path !== '/' && !path.includes('/u/')) && <p className='description'>{postData.description}</p>}
+                {postData.description && (
+                    <p className={`description ${isFeedCard ? 'description-clamp' : ''}`}>
+                        {postData.description}
+                    </p>
+                )}
 
-                {(!path.includes('/u/') && postData.imgUrl) && (
+                {isDetailView && postData.imgUrl && (
                     <div className="img-container relative w-full all-center">
                         <Image
                             src={postData.imgUrl}
-                            alt='bg-img'
+                            alt={postData.title}
                             fill
                             className='bg-img absolute'
                             priority
@@ -126,7 +146,7 @@ export default function Post({ postData, creator }: PostComponentProps) {
 
                         <Image
                             src={postData.imgUrl}
-                            alt='bg-img'
+                            alt={postData.title}
                             fill
                             className='img-post h-full absolute'
                             priority
@@ -134,32 +154,31 @@ export default function Post({ postData, creator }: PostComponentProps) {
                     </div>
                 )}
 
-                <div className="actions-container w-full flex align-center justify-start">
-                    <div className="relative like all-center pointer bg-hover-2" onClick={likeToggle}>
-                        {(user && postData.likes.includes(user.uid)) ? (
-                            <Favorite className='icon primary-color' />
-                        ) : (
-                            <FavoriteBorder className='icon' />
-                        )}
+                <div className="actions-container w-full flex align-center justify-between">
+                    <div className="actions-left flex align-center">
+                        <div className={`action-pill relative like all-center pointer ${isLiked ? 'liked' : ''}`} onClick={likeToggle}>
+                            {isLiked ? (
+                                <Favorite className='icon like-color' />
+                            ) : (
+                                <FavoriteBorder className='icon' />
+                            )}
 
-                        <span>{postData.likes.length.toString()}</span>
+                            <span>{postData.likes.length.toString()}</span>
+                        </div>
+
+                        <div className="action-pill relative comment all-center pointer" onClick={redirectPost}>
+                            <ChatBubbleOutline className='icon' />
+
+                            <span>{totalComments().toString()}</span>
+                        </div>
                     </div>
 
-                    <div className="relative comment all-center pointer bg-hover-2" onClick={redirectPost}>
-                        <ChatBubbleOutline className='icon' />
-
-                        <span>{totalComments().toString()}</span>
-                    </div>
-
-                    <div className="relative share all-center pointer bg-hover-2">
+                    <div className="action-pill relative share all-center pointer">
                         <IosShare className='icon' />
-
-                        <span>Share</span>
+                        {isDetailView && <span>Share</span>}
                     </div>
                 </div>
-            </article >
-
-            <hr />
-        </>
+            </div>
+        </article>
     )
 }

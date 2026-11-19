@@ -96,7 +96,7 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
                             user={user}
                         />
 
-                        <span>{'u/' + user?.displayName} </span>
+                        <span>{'@' + user?.displayName} </span>
                     </div>
                 )}
 

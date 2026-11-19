@@ -7,7 +7,7 @@ import { GlobalContext } from "@/src/app/providers";
 
 import AsideLeft from "./AsideLeft";
 import ImgHero from "./ImgHero";
-import AsideRight from "./AsideRight";
+import TopicBar from "./TopicBar";
 import FormSesion from "../forms/FormSesion";
 import { Spinner } from "../ui";
  
@@ -24,9 +24,11 @@ export default function GridLayout({ children }: Readonly<{ children: React.Reac
 
             <AsideLeft />
 
-            {path === '/' && <ImgHero />}
+            <TopicBar />
 
             <main>
+                {path === '/' && <ImgHero />}
+
                 {loadingData && <Spinner />}
 
                 {fetchError && <p>server error, reload the page or try again later...</p> }
@@ -37,8 +39,6 @@ export default function GridLayout({ children }: Readonly<{ children: React.Reac
                     </>
                 )}
             </main>
-
-            <AsideRight />
         </div>
     )
 }

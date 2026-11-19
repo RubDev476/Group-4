@@ -4,6 +4,7 @@ import GridLayout from "./GridLayout";
 import Header from "./Header";
 import ImgHero from "./ImgHero";
 import AccordionPopulars from "./AccordionPopulars";
+import TopicBar from "./TopicBar";
 
 export {
     AsideLeft,
@@ -11,5 +12,6 @@ export {
     GridLayout,
     Header,
     ImgHero,
-    AccordionPopulars
+    AccordionPopulars,
+    TopicBar
 }

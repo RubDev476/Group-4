@@ -28,7 +28,11 @@ export default function FormRegister({ select, setFormRegister, blur, setSucces,
 
     return (
         <>
-            <h3>Register</h3>
+            <div className="modal-brand logo-font">
+                <span>my<span className="logo-accent">feed</span></span>
+            </div>
+            <h3 className="logo-font">Join myfeed</h3>
+            <p className="modal-subtitle">Share freely in the communities you choose.</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="bg-input relative">
@@ -105,7 +109,7 @@ export default function FormRegister({ select, setFormRegister, blur, setSucces,
                     {(watch('password') !== undefined && watch('confirmPassword') !== undefined) && (watch('confirmPassword') !== watch('password') && <span className="error-input">Password does not match*</span>)}
                 </div>
 
-                <p>Are you already a member of group 4? <span className="pointer" onClick={() => setFormRegister(false)}>Sign in</span></p>
+                <p>Already a member of myfeed? <span className="pointer" onClick={() => setFormRegister(false)}>Sign in</span></p>
 
                 <div className="action-container relative text-center">
                     {errorSubmit !== '' && <span className="error-submit absolute w-full">{errorSubmit}</span>}

@@ -1,103 +1,143 @@
-$primary: #ff2600; //rgb(255, 38, 0)
-$primary-hover: #b61b00;
+/* ==========================================================================
+   myfeed Design System — Color Tokens & CSS Custom Properties
+   Palette: Calm Teal / Emerald Accent + Crisp Light + Deep Slate-Teal Dark
+   ========================================================================== */
 
-$body-color: #fff;
-$text-color: #000;
-$border-line: rgb(0, 0, 0, .2); /*lineas de bordes sutiles en los contenedores*/
+$primary: #0D9488;
+$primary-hover: #0F766E;
+$primary-dark: #14B8A6;
+$primary-dark-hover: #2DD4BF;
+$like-color: #F43F5E;
 
-/*$body-color-dark: #03020f;*/
-$body-color-dark: #0e0d27;
-$text-color-dark: #fff;
-$border-line-dark: rgb(255, 255, 255, 0.2); /*lineas de bordes sutiles en los contenedores*/
+$body-color: #F4F6F8;
+$surface-color: #FFFFFF;
+$text-color: #0F172A;
+$border-line: rgba(15, 23, 42, 0.08);
 
-$border-color-container: #a1a1a1;
-$error-color: #d30000;
+$body-color-dark: #0B1115;
+$surface-color-dark: #121A20;
+$text-color-dark: #E8F0F2;
+$border-line-dark: rgba(148, 180, 198, 0.13);
 
-/*-------- dark mode --------- */
-[data-theme='dark'] .bg-color {
-    background-color: $body-color-dark;
+$border-color-container: rgba(100, 116, 139, 0.25);
+$error-color: #EF4444;
+
+:root {
+    --mf-bg: #F4F6F8;
+    --mf-surface: #FFFFFF;
+    --mf-surface-subtle: #F8FAFC;
+    --mf-surface-hover: #EEF2F6;
+    --mf-surface-active: rgba(13, 148, 136, 0.1);
+    --mf-header-bg: rgba(255, 255, 255, 0.84);
+
+    --mf-text: #0F172A;
+    --mf-text-secondary: #475569;
+    --mf-text-muted: #64748B;
+
+    --mf-border: rgba(15, 23, 42, 0.08);
+    --mf-border-strong: rgba(15, 23, 42, 0.15);
+
+    --mf-input-bg: #EEF2F6;
+    --mf-input-focus-bg: #FFFFFF;
+
+    --mf-primary: #0D9488;
+    --mf-primary-hover: #0F766E;
+    --mf-primary-soft: rgba(13, 148, 136, 0.12);
+    --mf-primary-text: #FFFFFF;
+
+    --mf-like: #F43F5E;
+    --mf-like-soft: rgba(244, 63, 94, 0.12);
+    --mf-error: #DC2626;
+
+    --mf-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --mf-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+    --mf-shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.14);
+
+    --mf-radius-sm: 10px;
+    --mf-radius-md: 16px;
+    --mf-radius-lg: 22px;
+    --mf-radius-pill: 9999px;
 }
 
-[data-theme='dark'] .border-bottom {
-    border-bottom: solid 1px $border-line-dark;
+[data-theme='dark'] {
+    --mf-bg: #0B1115;
+    --mf-surface: #121A20;
+    --mf-surface-subtle: #162028;
+    --mf-surface-hover: #1B2832;
+    --mf-surface-active: rgba(20, 184, 166, 0.14);
+    --mf-header-bg: rgba(11, 17, 21, 0.84);
+
+    --mf-text: #E8F0F2;
+    --mf-text-secondary: #B4C4CE;
+    --mf-text-muted: #7F95A3;
+
+    --mf-border: rgba(148, 180, 198, 0.12);
+    --mf-border-strong: rgba(148, 180, 198, 0.22);
+
+    --mf-input-bg: #17222B;
+    --mf-input-focus-bg: #1B2832;
+
+    --mf-primary: #14B8A6;
+    --mf-primary-hover: #2DD4BF;
+    --mf-primary-soft: rgba(20, 184, 166, 0.15);
+    --mf-primary-text: #06211E;
+
+    --mf-like: #FB7185;
+    --mf-like-soft: rgba(251, 113, 133, 0.14);
+    --mf-error: #F87171;
+
+    --mf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --mf-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.32);
+    --mf-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.55);
 }
 
-[data-theme='dark'] .bg-input {
-    background-color: #1b1736;
-}
-
-[data-theme='dark'] .shadow {
-    box-shadow: $border-line-dark 0px 3px 3px 0px;
-}
-
-[data-theme='dark'] .text-opacity {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-[data-theme='dark'] .text-color {
-    color: $text-color-dark;
-}
-
-[data-theme='dark'] .bg-hover {
-    background-color: transparent;
-    
-    &:hover {
-        background-color: #1b1736;
-    }
-}
-
-[data-theme='dark'] .bg-hover-2 {
-    background-color: #131025;
-
-    &:hover { 
-        background-color: #342e57;
-    }
-}
-
-[data-theme='dark'] .bg-path {
-    background-color: #1b1736;
-}
-/*-------- light mode ---------- */
+/* Semantic Theme Utility Classes (backward compatible with existing JSX) */
 .bg-color {
-    background-color: $body-color;
+    background-color: var(--mf-surface);
 }
 
 .border-bottom {
-    border-bottom: solid 1px $border-line;
+    border-bottom: 1px solid var(--mf-border);
 }
 
 .bg-input {
-    background-color: #dbdbdb;
+    background-color: var(--mf-input-bg);
 }
 
 .shadow {
-    box-shadow: $border-line 0px 3px 3px 0px;
+    box-shadow: 0 0 0 2px var(--mf-primary-soft), var(--mf-shadow-sm);
 }
 
 .text-opacity {
-    color: rgba(0, 0, 0, 0.8);
+    color: var(--mf-text-muted);
 }
 
 .text-color {
-    color: $text-color;
+    color: var(--mf-text);
 }
 
 .bg-hover {
     background-color: transparent;
+    transition: background-color 0.18s ease, color 0.18s ease;
 
     &:hover {
-        background-color: #dbdbdb;
+        background-color: var(--mf-surface-hover);
     }
 }
 
 .bg-hover-2 {
-    background-color: #ececec;
+    background-color: var(--mf-input-bg);
+    color: var(--mf-text-secondary);
+    transition: background-color 0.18s ease, color 0.18s ease;
 
     &:hover {
-        background-color: #bbbbbb;
+        background-color: var(--mf-surface-hover);
+        color: var(--mf-text);
     }
 }
 
 .bg-path {
-    background-color: #dbdbdb;
+    background-color: var(--mf-surface-active);
+    color: var(--mf-primary) !important;
+    font-weight: 600 !important;
 }

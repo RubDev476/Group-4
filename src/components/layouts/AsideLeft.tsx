@@ -4,156 +4,105 @@ import { ReactNode, useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-
-import {
-    Home,
-    HomeOutlined,
-    TrendingUpOutlined,
-    ExpandMore,
-    Info
-} from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 
 import { TopicIcon, topicIcons } from "@/src/utilities/asideLeftItems";
-
 import { AvatarImg } from "../ui";
-import { DocumentData } from "firebase/firestore";
-
-import firebase from "@/src/firebase/firebase";
 import { GlobalContext } from "@/src/app/providers";
-
-import AccordionPopulars from "./AccordionPopulars";
 import { USERS } from "@/src/fakeData";
 
 export default function AsideLeft() {
-    const [showMoreTopics, setShowTopics] = useState(false);
     const [recentActivity, setRecentActivity] = useState<any>(USERS);
 
     const path = usePathname();
     
-    const { user, navModal } = useContext(GlobalContext);
+    const { user, navModal, setNavModal, popularUsers } = useContext(GlobalContext);
 
     useEffect(() => {
         //if(user) fetchRecentActivity(user.uid);
         //if(!user) setRecentActivity([]);
     }, [user])
 
-    const fetchRecentActivity = async (uid: string) => {
-        //const getRecentActivity = await firebase.getRecentActivity(uid);
-
-        //setRecentActivity(getRecentActivity ? getRecentActivity : []);
-    }
-
     return (
-        <aside className={`left ${navModal ? 'flex' : 'none'} bg-color scroll-bar-style`}>
-            <Link href='/' className={`flex align-center justify-start text-color w-full bg-hover ${path === '/' ? 'bg-path' : ''}`}>
-                {path === '/' ? (
-                    <Home className="icon icon-path" />
-                ) : (<HomeOutlined className="icon icon-path" />)}
+        <aside className={`niches-drawer ${navModal ? 'open' : ''} bg-color scroll-bar-style`} aria-hidden={!navModal}>
+            <div className="drawer-header flex align-center justify-between w-full">
+                <div>
+                    <h3 className="logo-font">Explore Niches</h3>
+                    <p>Pick what you care about. Zero algorithmic noise.</p>
+                </div>
 
-                <span>Main</span>
-            </Link>
-
-            <Link href='#' className="flex align-center justify-start text-color w-full bg-hover">
-                <TrendingUpOutlined className="icon" />
-
-                <span>Popular</span>
-            </Link>
-
-            <hr />
-
-            {(recentActivity.length > 0 /*&& user*/) && (
-                <>
-                    <Accordion className='w-full text-color acordeon' defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none', "::before": { display: 'none' } }}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMore className='icon-expanded' />}
-                            aria-controls="panel1-content"
-                            id="panel1-header"
-                            className="accordion-title"
-                        >
-                            Recent
-                        </AccordionSummary>
-
-                        <AccordionDetails className='acordeon-items-container' sx={{ padding: '0' }}>
-                            {recentActivity.map((user: any) => (
-                                <Link key={user.uid} href={`/u/${user.displayName}`} className="flex align-center justify-start text-color w-full bg-hover">
-                                    <AvatarImg
-                                        size={30}
-                                        fontSize={20}
-                                        user={user}
-                                    />
-
-                                    <span>{`u/${user.displayName}`}</span>
-                                </Link>
-                            ))}
-                        </AccordionDetails>
-                    </Accordion>
-
-                    <hr />
-                </>
-            )}
-
-            <div className="accordion-populars">
-                <AccordionPopulars />
-
-                <hr />
+                <button
+                    type="button"
+                    className="drawer-close all-center pointer"
+                    onClick={() => setNavModal(false)}
+                    aria-label="Close niches drawer"
+                >
+                    <Close />
+                </button>
             </div>
 
-            <Accordion className='w-full text-color acordeon' defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none', "::before": { display: 'none' } }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMore className='icon-expanded' />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                    className="accordion-title"
-                >
-                    Topics
-                </AccordionSummary>
+            <div className="drawer-section w-full">
+                <span className="drawer-label">All {topicIcons.length} Communities</span>
+                <div className="drawer-topics-grid">
+                    {topicIcons.map((topic: TopicIcon): ReactNode => (
+                        <Link
+                            key={topic.title}
+                            href={topic.path}
+                            onClick={() => setNavModal(false)}
+                            className={`drawer-topic-chip ${path === topic.path ? 'active' : ''}`}
+                        >
+                            {topic.iconPath && path === topic.path ? (
+                                <topic.iconPath className="icon" />
+                            ) : (
+                                <topic.icon className="icon" />
+                            )}
+                            <span>{topic.title}</span>
+                        </Link>
+                    ))}
+                </div>
+            </div>
 
-                <AccordionDetails className='acordeon-items-container' sx={{ padding: '0' }}>
-                    {topicIcons.map((topic: TopicIcon, index: number): ReactNode => {
-                        if (index > 5 && !showMoreTopics) return;
-
-                        return (
-                            <Link key={topic.title} href={topic.path} className={`flex align-center justify-start text-color w-full bg-hover ${path === topic.path ? 'bg-path' : ''}`}>
-                                {topic.iconPath && path === topic.path ? (
-                                    <topic.iconPath className="icon icon-path" />
-                                ) : (<topic.icon className="icon icon-path" />)}
-
-                                <span>{topic.title}</span>
+            {popularUsers.length > 0 && (
+                <div className="drawer-section w-full">
+                    <span className="drawer-label">Popular Creators</span>
+                    <div className="drawer-creators-list">
+                        {popularUsers.map((creator: any) => (
+                            <Link
+                                key={creator.uid}
+                                href={`/u/${creator.displayName}`}
+                                onClick={() => setNavModal(false)}
+                                className="drawer-creator-item"
+                            >
+                                <AvatarImg size={32} fontSize={15} user={creator} />
+                                <span>{`@${creator.displayName}`}</span>
                             </Link>
-                        )
-                    })}
+                        ))}
+                    </div>
+                </div>
+            )}
 
-                    <button onClick={() => setShowTopics(!showMoreTopics)} className="btn-view bg-hover pointer">{!showMoreTopics ? 'See more...' : 'See less'}</button>
-                </AccordionDetails>
-            </Accordion>
+            {recentActivity.length > 0 && (
+                <div className="drawer-section w-full">
+                    <span className="drawer-label">Recently Visited</span>
+                    <div className="drawer-creators-list">
+                        {recentActivity.map((recentUser: any) => (
+                            <Link
+                                key={recentUser.uid}
+                                href={`/u/${recentUser.displayName}`}
+                                onClick={() => setNavModal(false)}
+                                className="drawer-creator-item"
+                            >
+                                <AvatarImg size={32} fontSize={15} user={recentUser} />
+                                <span>{`@${recentUser.displayName}`}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
 
-            <hr />
-
-            <Accordion className='w-full text-color acordeon' defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none', "::before": { display: 'none' } }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMore className='icon-expanded' />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                    className="accordion-title"
-                >
-                    Resources
-                </AccordionSummary>
-
-                <AccordionDetails className='acordeon-items-container' sx={{ padding: '0' }}>
-                    <Link href='#' className="flex align-center justify-start text-color w-full bg-hover">
-                        <Info className="icon icon-path" />
-
-                        <span>About Group 4</span>
-                    </Link>
-                </AccordionDetails>
-            </Accordion>
-
-            <hr />
-
-            <p>Created by <span>Rub</span>Developer © {new Date().getFullYear()}</p>
+            <p className="drawer-footer">
+                <span>myfeed</span> · Created by <span>Rub</span>Developer © {new Date().getFullYear()}
+            </p>
         </aside>
     )
 }
