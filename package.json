@@ -5,10 +5,13 @@
   "engines": {
     "node": "26.x"
   },
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,11 +28,17 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.13",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^11.0.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "jsdom": "^29.1.1",
     "sass": "^1.97.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.1.1"
   }
 }

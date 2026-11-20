@@ -16,6 +16,7 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 - [Requisitos previos](#requisitos-previos)
 - [Instalación y ejecución local](#-instalación-y-ejecución-local)
 - [Scripts disponibles](#-scripts-disponibles)
+- [Pruebas (Testing)](#-pruebas-testing)
 - [Modernización con IA Antigravity](#-modernización-con-ia-antigravity)
 
 ---
@@ -48,6 +49,7 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 | Formularios | [React Hook Form](https://react-hook-form.com/) |
 | Carga de archivos | [React Dropzone](https://react-dropzone.js.org/) |
 | Utilidades | `date-fns`, `uuid` |
+| Testing | [Vitest 5](https://vitest.dev/), [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`, `@vitejs/plugin-react` |
 
 ---
 
@@ -81,9 +83,15 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 │   ├── styles/                # Arquitectura SCSS modular (globals, components, pages)
 │   ├── types/                 # Definiciones de tipos TypeScript
 │   └── utilities/             # Helpers (formato de fechas, likes, colores de tema, topics)
+├── test/                      # Pruebas unitarias y de integración (espejo de src/)
+│   ├── setup.ts               # Configuración global de jsdom y mocks de Next.js
+│   ├── utils/                 # Helpers de renderizado con GlobalContext
+│   ├── unit/                  # Pruebas unitarias (components/* y utilities/)
+│   └── integration/           # Pruebas de integración (app/providers y pageComponents/)
 ├── next.config.mjs
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+└── vitest.config.ts
 ```
 
 ---
@@ -136,6 +144,44 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 | `npm run dev` | Inicia el servidor de desarrollo de Next.js. |
 | `npm run build` | Genera la compilación optimizada para producción. |
 | `npm run start` | Ejecuta la aplicación compilada en modo producción. |
+| `npm test` | Ejecuta toda la suite de pruebas unitarias y de integración con Vitest. |
+| `npm run test:watch` | Ejecuta Vitest en modo interactivo (*watch*) al guardar cambios. |
+
+---
+
+## 🧪 Pruebas (Testing)
+
+El proyecto cuenta con una suite de **57 pruebas automatizadas** repartidas en **7 archivos**, implementadas con **Vitest** y **React Testing Library** bajo entorno `jsdom`, siguiendo la misma jerarquía de carpetas que `src/`:
+
+### Dependencias de testing
+
+- `vitest` y `@vitejs/plugin-react` — corredor de pruebas y soporte JSX/TSX.
+- `@testing-library/react` — renderizado y consultas accesibles de componentes React.
+- `@testing-library/jest-dom` — *matchers* semánticos para el DOM (`toBeInTheDocument`, `toHaveAttribute`, etc.).
+- `@testing-library/user-event` — simulación realista de interacciones de usuario (clics, escritura, envío de formularios).
+- `jsdom` — entorno DOM simulado en Node.js.
+
+### Cobertura de la suite
+
+- **Pruebas unitarias (`test/unit/`):**
+  - `utilities/utilities.test.ts`: `handleLikes`, `formatDate`, `themeColors` y listado de 28 `topicIcons`.
+  - `components/ui/ui.test.tsx`: `AvatarImg`, `NotFound`, `Skeleton`, `SkeletonUser`, `Spinner` y `UserOptions`.
+  - `components/layouts/layouts.test.tsx`: `Header`, `TopicBar`, `ImgHero`, `AsideLeft`, `AccordionPopulars`, `AsideRight` y `GridLayout`.
+  - `components/forms/forms.test.tsx`: `FormLogin`, `FormRegister`, `FormSesion`, `FormComment`, `UserForm` (`createPost` y `editProfile`), `EditPostForm` y `Dropzone`.
+  - `components/posts/posts.test.tsx`: `Post`, `PostOptions`, `Comment`, `Reply` y `CommentsContainer`.
+- **Pruebas de integración (`test/integration/`):**
+  - `app/providers.test.tsx`: inicialización de `GlobalContext` con los datos locales y estados de carga.
+  - `pageComponents/pages.test.tsx`: feed principal (`Main`), flujo completo de detalle de publicación (`Post` con likes y comentarios en tiempo real + 404) y vista de perfil (`User` con métricas, publicaciones, estado vacío y 404).
+
+### Ejecutar las pruebas
+
+```bash
+# Ejecución única (CI / verificación)
+npm test
+
+# Modo watch durante desarrollo
+npm run test:watch
+```
 
 ---
 
@@ -156,4 +202,8 @@ Este proyecto fue renovado, limpiado y modernizado con la asistencia de **Antigr
   - Se reemplazaron los tipos acoplados a Firebase (`User`, `DocumentData`) por tipos propios del proyecto (`UserDbType`, `PostTypes`, `CommentTypes`, `ReplyTypes`, `AllPostsType`) en `src/types/index.ts` y `src/types/components-props.ts`.
   - Se simplificó `src/app/providers.tsx` para operar directamente con los datos locales y se limpiaron todas las llamadas a base de datos en páginas, formularios, publicaciones, layouts y componentes UI, conservando la interactividad local.
   - Se actualizaron los parámetros de rutas dinámicas (`params` como `Promise`) para compatibilidad total con Next.js 16.
+- **Estandarización de terminología (`niches` → `topics`):**
+  - Se reemplazaron todas las referencias de `niche` / `niches` por `topic` / `topics` en textos visibles, atributos `aria-label` y clases SCSS (`aside.topics-drawer`).
+- **Testing automatizado:**
+  - Se configuró **Vitest** + **React Testing Library** (`vitest.config.ts`, `test/setup.ts`) y se implementaron 57 pruebas unitarias y de integración reflejando la jerarquía de `src/`.
 ---
