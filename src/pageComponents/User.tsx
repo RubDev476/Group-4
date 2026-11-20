@@ -7,23 +7,20 @@ import { Post } from "../components/posts";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import type { DocumentData } from "firebase/firestore";
-import type { AllPostsType } from "@/src/types";
+import type { AllPostsType, UserDbType } from "@/src/types";
 import type { UserProps } from "../types/components-props";
  
-import firebase from "@/src/firebase/firebase";
 import { USERS } from "../fakeData";
 
 export default function User({ userName }: UserProps) {
     const [loadingPageUser, setLoadingPageUser] = useState(true);
-    const [user, setUser] = useState<DocumentData | null>(null);
+    const [user, setUser] = useState<UserDbType | null>(null);
     const [posts, setPosts] = useState<AllPostsType[] | []>([]);
 
     const {allPosts, loadingData } = useContext(GlobalContext);
 
     useEffect(() => {
         const getDataUser = async () => {
-            //const getUser = await firebase.getData('users', userName);
             const getUser = USERS.find(user => user.displayName === userName);
 
             if(!getUser) return setLoadingPageUser(false);

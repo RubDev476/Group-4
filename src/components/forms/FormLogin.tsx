@@ -3,25 +3,12 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginType } from "@/src/types";
 import type { FormsSessionProps } from "@/src/types/components-props";
-import firebase from "@/src/firebase/firebase";
 
-export default function FormLogin({ select, setFormRegister, blur, setErrorSubmit, setSucces: setExito, errorSubmit, setFormModal }: FormsSessionProps) {
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<LoginType>();
+export default function FormLogin({ select, setFormRegister, blur, setErrorSubmit, errorSubmit, setFormModal }: FormsSessionProps) {
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginType>();
 
-    const onSubmit: SubmitHandler<LoginType> = async (data) => {
-        try {
-            await firebase.signIn(data);
-
-            if(setFormModal) setFormModal(false);
-        } catch (error: any) {
-            if(error.message.includes('auth/invalid-credential')) setErrorSubmit('Incorrect email or password*');
-
-            if(error.message.includes('Access to this')) setErrorSubmit('Error - try again later*');
-
-            setTimeout(() => {
-                setErrorSubmit('');
-            }, 3000)
-        }
+    const onSubmit: SubmitHandler<LoginType> = async () => {
+        if (setFormModal) setFormModal(false);
     }
 
     return ( 

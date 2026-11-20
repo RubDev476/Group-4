@@ -16,18 +16,13 @@ export default function AsideLeft() {
 
     const path = usePathname();
     
-    const { user, navModal, setNavModal, popularUsers } = useContext(GlobalContext);
-
-    useEffect(() => {
-        //if(user) fetchRecentActivity(user.uid);
-        //if(!user) setRecentActivity([]);
-    }, [user])
+    const { navModal, setNavModal, popularUsers } = useContext(GlobalContext);
 
     return (
-        <aside className={`niches-drawer ${navModal ? 'open' : ''} bg-color scroll-bar-style`} aria-hidden={!navModal}>
+        <aside className={`topics-drawer ${navModal ? 'open' : ''} bg-color scroll-bar-style`} aria-hidden={!navModal}>
             <div className="drawer-header flex align-center justify-between w-full">
                 <div>
-                    <h3 className="logo-font">Explore Niches</h3>
+                    <h3 className="logo-font">Explore Topics</h3>
                     <p>Pick what you care about. Zero algorithmic noise.</p>
                 </div>
 
@@ -35,7 +30,7 @@ export default function AsideLeft() {
                     type="button"
                     className="drawer-close all-center pointer"
                     onClick={() => setNavModal(false)}
-                    aria-label="Close niches drawer"
+                    aria-label="Close topics drawer"
                 >
                     <Close />
                 </button>

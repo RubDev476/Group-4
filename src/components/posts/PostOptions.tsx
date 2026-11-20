@@ -13,7 +13,6 @@ import {
     IconButton,
 } from "@mui/material";
 import { MoreHoriz, Delete, Edit } from '@mui/icons-material';
-import firebase from '@/src/firebase/firebase';
 import { GlobalContext } from "@/src/app/providers";
 
 import type { PostProps } from '@/src/types/components-props';
@@ -28,7 +27,7 @@ export default function PostOptions({idPost}: PostProps) {
     const path = usePathname();
     const router = useRouter();
 
-    const {setRefresh, user} = useContext(GlobalContext);
+    const { setAllPosts, allPosts, user } = useContext(GlobalContext);
 
     useEffect(() => {
         setMounted(true);
@@ -41,19 +40,12 @@ export default function PostOptions({idPost}: PostProps) {
     const editPost = () => router.push('/edit-post/' + idPost);
 
     const deletePost = async () => {
-        if(!user) return;
+        if (!user) return;
 
-        try {
-            await firebase.deletePost(idPost);
-            await firebase.createPopularUser(user.uid);
+        setAllPosts(allPosts.filter(item => item.posts.id !== idPost));
 
-            if(path.includes('/p/')) {
-                setRefresh({refresh: true, redirectTo: '/'});
-            } else {
-                setRefresh({refresh: true, redirectTo: ''});  
-            }
-        } catch (error) {
-            console.log(error);
+        if (path.includes('/p/')) {
+            router.push('/');
         }
     } 
 

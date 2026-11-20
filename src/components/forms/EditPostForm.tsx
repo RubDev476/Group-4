@@ -7,11 +7,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone from "./Dropzone";
 import { AvatarImg } from "../ui";
 
-import { UserFormType } from '@/src/types';
+import { PostTypes, UserFormType } from '@/src/types';
 import type { PostProps } from "@/src/types/components-props";
-
-import firebase from '@/src/firebase/firebase';
-import { DocumentData } from "firebase/firestore";
 
 import { GlobalContext } from "@/src/app/providers";
 
@@ -19,7 +16,7 @@ export default function EditPostForm({ idPost }: PostProps) {
     const [imgFile, setImgFile] = useState<File | null | string>(null)
     const [loadingPage, setLoadingPage] = useState(true);
     const [errorImg, setErrorImg] = useState<string>('');
-    const [currentPost, setCurrentPost] = useState<DocumentData | undefined>(undefined);
+    const [currentPost, setCurrentPost] = useState<PostTypes | undefined>(undefined);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<UserFormType>();
 
@@ -43,21 +40,9 @@ export default function EditPostForm({ idPost }: PostProps) {
     }, [loadingPage, loadingData, user]);
 
     const onSubmit: SubmitHandler<UserFormType> = async (data) => {
-        try {
-            if(!currentPost) return;
+        if (!currentPost) return;
 
-            await firebase.editPost({
-                title: data.title,
-                description: data.description,
-                imgUrl: imgFile,
-                idPost,
-                deleteImg: !imgFile && currentPost.imgUrl
-            })
-
-            setRefresh({refresh: true, redirectTo: '/p/' + idPost});
-        } catch (error) {
-            console.log(error);
-        }
+        router.push('/p/' + idPost);
     }
 
     if (user && currentPost) return (

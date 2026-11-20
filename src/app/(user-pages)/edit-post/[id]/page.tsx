@@ -9,8 +9,10 @@ export const metadata: Metadata = {
     description: "Explore, share, and express what you want with everyone",
 };
 
-export default function Page({ params }: Params) {
+export default async function Page({ params }: Params) {
+    const { id } = await params;
+
     return (
-        <EditPostForm idPost={params.id} />
+        <EditPostForm idPost={id} />
     )
 }

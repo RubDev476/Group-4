@@ -10,8 +10,6 @@ import { AvatarImg } from "../ui";
 import { UserFormType } from '@/src/types';
 import type { TypeOfFormProps } from "@/src/types/components-props";
 
-import firebase from '@/src/firebase/firebase';
-
 import { GlobalContext } from "@/src/app/providers";
 
 const FormActions = {
@@ -39,46 +37,10 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
         if(!user && !loadingData) router.push('/');
     }, [loadingData, user])
 
-    const onSubmit: SubmitHandler<UserFormType> = async (data) => {
-        //It will never be a string, only since we use the same state for the other form, that's why I put it...
-        if(typeof imgFile === 'string' || !user) return;
+    const onSubmit: SubmitHandler<UserFormType> = async () => {
+        if (typeof imgFile === 'string' || !user) return;
 
-        try {
-            switch (typeForm) {
-                case 'editProfile': {
-                    if (imgFile) {
-                        await firebase.updateProfileImg(imgFile, user);
-    
-                        if (data.name === '') setRefresh({refresh: true, redirectTo: '/u/' + user.displayName})
-                    }
-
-                    if (data.name !== '') {
-                        await firebase.updateUserName(data.name.replace(/ /g, ""), user);
-
-                        setRefresh({refresh: true, redirectTo: '/u/' + data.name.replace(/ /g, "")})
-                    }
-
-                    break;
-                }
-                case 'createPost': {
-                    const { title, description } = data;
-
-                    const idNewPost = await firebase.createPost({
-                        title,
-                        description,
-                        imgFile,
-                        user
-                    });
-
-                    setRefresh({refresh: true, redirectTo: '/p/' + idNewPost});
-
-                    break;
-                } 
-                default: break;
-            }
-        } catch (error) {
-            console.log(error)
-        }
+        router.push('/');
     }
 
     if (loadingData && !user) return null;

@@ -4,8 +4,6 @@ import { ChangeEvent, useContext, useState } from "react";
 
 import { v4 as generateId } from 'uuid';
 
-import firebase from "@/src/firebase/firebase";
-
 import type { CommentTypes, ReplyTypes } from "@/src/types";
 import type { FormCommentProps } from "@/src/types/components-props";
 
@@ -22,19 +20,15 @@ export default function FormComment({ post, isReplyForm, resetFormComment, comme
         if (comment === '' || !user) return;
 
         try {
-            if (user.uid !== post.idUser) await firebase.handleRecentActivity(user.uid, post.idUser);
-
-            let newComment: CommentTypes | ReplyTypes = {
+            const newComment: CommentTypes | ReplyTypes = {
                 id: generateId(),
                 idUser: user.uid,
                 date: Date.now(),
                 likes: [],
                 comment: comment,
-            }
-            
-            const {updatePosts} = update_state(newComment);
+            };
 
-            await update_db(newComment);
+            const { updatePosts } = update_state(newComment);
 
             setAllPosts(updatePosts);
             setComment('');
@@ -75,18 +69,6 @@ export default function FormComment({ post, isReplyForm, resetFormComment, comme
         return {
             updatePosts
         }
-    }
-
-    const update_db = async (newComment: CommentTypes | ReplyTypes) => {
-        const currentPost_db = await firebase.getData('posts', post.id);
-
-        if(!currentPost_db) return;
-
-        let currentComments_db = currentPost_db.comments;
-
-        const newComments = update_post(newComment, currentComments_db);
-        
-        await firebase.updatePost({ idPost: post.id, key: 'comments', newData: newComments});
     }
 
     const cancel = () => {

@@ -10,7 +10,7 @@ import { ExpandMore } from "@mui/icons-material";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import { DocumentData } from "firebase/firestore";
+import type { UserDbType } from "@/src/types";
 
 import { AvatarImg, SkeletonUser } from "../ui";
 
@@ -41,7 +41,7 @@ export default function AccordionPopulars() {
 
                 {(popularUsers.length > 0) && (
                     <>
-                        {popularUsers.map((user: DocumentData) => (
+                        {popularUsers.map((user: UserDbType) => (
                             <Link key={user.uid} href={`/u/${user.displayName}`} className="flex align-center justify-start text-color w-full bg-hover">
                                 <AvatarImg
                                     size={30}

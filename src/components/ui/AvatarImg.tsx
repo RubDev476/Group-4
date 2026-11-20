@@ -22,7 +22,7 @@ export default function AvatarImg({ size, fontSize, user }: AvatarProps) {
             ) : (
                 <Avatar
                     alt="img-user"
-                    src={user.photoURL}
+                    src={user.photoURL ?? undefined}
                     sx={{ width: size, height: size }}
                 />
             )}

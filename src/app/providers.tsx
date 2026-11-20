@@ -4,13 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, createContext } from 'react';
 
-import { AllPostsType, AllUsersFetch, GlobalContextType } from '../types';
-
-import { DocumentData } from 'firebase/firestore';
-import { User } from 'firebase/auth';
-
-import firebase from '../firebase/firebase';
-import useAutenticacion from '../hooks/useAuthUser';
+import { AllPostsType, GlobalContextType, UserDbType } from '../types';
 import { POSTS, USERS } from '../fakeData';
 
 const defaultValues: GlobalContextType = {
@@ -29,10 +23,7 @@ const defaultValues: GlobalContextType = {
     fetchError: false
 };
 
-export const GlobalContext = createContext<GlobalContextType>(defaultValues); 
-
-//The original code had this, but it was an example with tailwind
-//<ThemeProvider attribute="class" defaultTheme='system' enableSystem>
+export const GlobalContext = createContext<GlobalContextType>(defaultValues);
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [navModal, setNavModal] = useState(false);
@@ -40,88 +31,48 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const [loadingData, setLoadingData] = useState(true);
     const [loadingPopular, setLoadingPopular] = useState(true);
 
-    const [popularUsers, setPopularUsers] = useState<any[]>([]);
+    const [popularUsers, setPopularUsers] = useState<UserDbType[]>([]);
     const [allPosts, setAllPosts] = useState<AllPostsType[]>([]);
-    const [allUsers, setAllUsers] = useState<any>(null);
-    const [user, setUser] = useState<User | null>(null);
-    const [fetchError, setFetchError] = useState(false);
+    const [allUsers, setAllUsers] = useState<UserDbType[] | null>(null);
+    const [user] = useState<UserDbType | null>(null);
+    const [fetchError] = useState(false);
 
-    //when the user edits their profile, or another fetch actions
-    const [refresh, setRefresh] = useState({refresh: false, redirectTo: ''});
-
-    const getCurrentUser = useAutenticacion();
+    const [refresh, setRefresh] = useState({ refresh: false, redirectTo: '' });
 
     const router = useRouter();
 
-    useEffect(() => {
-        setUser(getCurrentUser);
-    }, [getCurrentUser])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await handleFetch();
-        };
-    
-        fetchData();
-    }, []);
-    
-    useEffect(() => {
-        if (refresh.refresh) {
-            const refreshData = async () => {
-                await handleFetch();
-
-                //setRefresh({...refresh, refresh: false});
-                setRefresh(prev => ({...prev, refresh: false}));
-                    
-                if(refresh.redirectTo !== '') router.push(refresh.redirectTo);
-            };
-    
-            refreshData();
-        }
-    }, [refresh]);    
-
-    const getPopulars = async () => {
-        //const res = await firebase.getPopularUsers();
-
-        setPopularUsers(USERS);
-        setLoadingPopular(false);
-    }
-
-    const getData = async () => {
-        const res = await firebase.getAllPosts();
-        const users = await firebase.getAllUsers();
-        
+    const loadFakeData = () => {
         setAllPosts(POSTS);
         setAllUsers(USERS);
+        setPopularUsers(USERS);
         setLoadingData(false);
-    }
+        setLoadingPopular(false);
+    };
 
-    const handleFetch = async () => {
-        try {
-            //await getData();
-            //await getPopulars();
+    useEffect(() => {
+        loadFakeData();
+    }, []);
 
-            await Promise.all([getData(), getPopulars()]);
-        } catch (error) {
-            console.log(error);
+    useEffect(() => {
+        if (refresh.refresh) {
+            loadFakeData();
+            setRefresh(prev => ({ ...prev, refresh: false }));
 
-            setFetchError(true);
-            setLoadingData(false);
-            setLoadingPopular(false);
+            if (refresh.redirectTo !== '') router.push(refresh.redirectTo);
         }
-    }
+    }, [refresh, router]);
 
     useEffect(() => {
         document.body.classList.toggle('no-scrollY', navModal || formModal);
-    }, [navModal, formModal])
+    }, [navModal, formModal]);
 
     return (
         <ThemeProvider defaultTheme="dark" enableSystem={false}>
             <GlobalContext.Provider
                 value={{
-                    navModal, 
-                    formModal, 
-                    setNavModal, 
+                    navModal,
+                    formModal,
+                    setNavModal,
                     setFormModal,
                     allPosts,
                     setAllPosts,
@@ -137,5 +88,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 {children}
             </GlobalContext.Provider>
         </ThemeProvider>
-    )
+    );
 }

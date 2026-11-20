@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 
 import AvatarImg from "./AvatarImg";
 
-import firebase from "@/src/firebase/firebase";
-
 import { styled } from '@mui/material/styles';
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
@@ -52,7 +50,7 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
-    const logout = async () => await firebase.logOut();
+    const logout = async () => {};
 
     return (
         <>

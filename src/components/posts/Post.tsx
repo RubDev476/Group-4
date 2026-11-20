@@ -10,14 +10,12 @@ import { FavoriteBorder, ChatBubbleOutline, IosShare, Favorite } from '@mui/icon
 import { AvatarImg } from '../ui';
 
 import formatDate from '@/src/utilities/formatDate';
-
-import firebase from '@/src/firebase/firebase';
+import { handleLikes } from '@/src/utilities/handleLikes';
 import PostOptions from './PostOptions';
 
 import { GlobalContext } from "@/src/app/providers";
 
 import type { PostComponentProps } from '@/src/types/components-props';
-import { handleLikes } from '@/src/firebase/utils';
 
 export default function Post({ postData, creator }: PostComponentProps) {
     const path = usePathname();
@@ -30,19 +28,8 @@ export default function Post({ postData, creator }: PostComponentProps) {
     const likeToggle = async () => {
         if (!user) return setFormModal(true);
 
-        const {updatePosts, currentPosts} = update_state(user.uid);
-
-        try {
-            setAllPosts(updatePosts);
-
-            if (user.uid !== postData.idUser) await firebase.handleRecentActivity(user.uid, postData.idUser);
-
-            await update_db(user.uid);
-        } catch (error) {
-            console.log(error);
-
-            setAllPosts(currentPosts);
-        }
+        const { updatePosts } = update_state(user.uid);
+        setAllPosts(updatePosts);
     }
 
     //Modify data only for the state
@@ -60,23 +47,6 @@ export default function Post({ postData, creator }: PostComponentProps) {
             currentPosts,
             updatePosts
         }
-    }
-
-    //modify data only for the db
-    const update_db = async (uid: string) => {
-        const currentPost_db = await firebase.getData('posts', postData.id);
-
-        if(!currentPost_db) return;
-
-        const currentLikes_db = handleLikes(currentPost_db.likes, uid);
-
-        await firebase.updatePost({
-            idPost: postData.id,
-            idCreator: postData.idUser,
-            currentData: currentPost_db.likes.length,
-            key: 'likes',
-            newData: currentLikes_db
-        });
     }
 
     const redirectPost = () => {

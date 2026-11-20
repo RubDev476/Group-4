@@ -1,29 +1,16 @@
 'use client';
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import firebase from "@/src/firebase/firebase";
 import { RegisterType } from "@/src/types";
 import type { FormsSessionProps } from "@/src/types/components-props";
 
-export default function FormRegister({ select, setFormRegister, blur, setSucces, setErrorSubmit, errorSubmit }: FormsSessionProps) {
+export default function FormRegister({ select, setFormRegister, blur, setSucces, errorSubmit }: FormsSessionProps) {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterType>();
 
     const onSubmit: SubmitHandler<RegisterType> = async (data) => {
-        if(data.password !== data.confirmPassword) return;
- 
-        try {
-            await firebase.registerUser(data);
+        if (data.password !== data.confirmPassword) return;
 
-            setSucces(true);
-        } catch (error: any) {
-            if(error.message.includes('auth/email')) setErrorSubmit('The email is already in use*');
-
-            if(error.message.includes('name')) setErrorSubmit(error.message);
-
-            setTimeout(() => {
-                setErrorSubmit('');
-            }, 3000)
-        }
+        setSucces(true);
     }
 
     return (

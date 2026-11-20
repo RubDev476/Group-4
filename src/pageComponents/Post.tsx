@@ -10,8 +10,7 @@ import { FormComment } from "@/src/components/forms";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import type { DocumentData } from "firebase/firestore";
-import type { AllPostsType } from "@/src/types";
+import type { AllPostsType, CommentTypes } from "@/src/types";
 import type { PostProps } from "../types/components-props";
 
 export default function Post({ idPost }: PostProps) {
@@ -79,7 +78,7 @@ export default function Post({ idPost }: PostProps) {
                     )}
 
                     <div className="comments">
-                        {currentPost.posts.comments.map((commentPost: DocumentData) => (
+                        {currentPost.posts.comments.map((commentPost: CommentTypes) => (
                             <CommentsContainer
                                 key={commentPost.id}
                                 commentDoc={commentPost}

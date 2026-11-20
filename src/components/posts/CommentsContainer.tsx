@@ -2,31 +2,29 @@
 
 import { useContext, useEffect, useState, useMemo } from "react";
 
-import { DocumentData } from "firebase/firestore";
-
 import { GlobalContext } from "@/src/app/providers";
 
 import { FormComment } from "@/src/components/forms";
 import { Reply, Comment } from "@/src/components/posts";
 
+import type { ReplyTypes, UserDbType } from "@/src/types";
 import type { CommentsContainerProps } from "@/src/types/components-props";
 
 export default function CommentsContainer({ commentDoc, setCommentId, currentPost, commentId, resetFormComment}: CommentsContainerProps) {
     const { allUsers } = useContext(GlobalContext);
 
-    const [userPost, setUserPost] = useState<any>(undefined);
+    const [userPost, setUserPost] = useState<UserDbType | undefined>(undefined);
 
     useEffect(() => {
         if (allUsers) {
-            //const getUser = allUsers.get(commentDoc.idUser);
-            const getUser = allUsers.find((user: any) => user.uid === commentDoc.idUser);
+            const getUser = allUsers.find((user: UserDbType) => user.uid === commentDoc.idUser);
 
             setUserPost(getUser);
         }
     }, [allUsers, commentDoc])
 
     const memoizedReplies = useMemo(() => {
-        return commentDoc.replies.length > 0 && commentDoc.replies.map((res: DocumentData) => <Reply key={res.id} reply={res} currentPost={currentPost} commentId={commentDoc.id} />)
+        return commentDoc.replies.length > 0 && commentDoc.replies.map((res: ReplyTypes) => <Reply key={res.id} reply={res} currentPost={currentPost} commentId={commentDoc.id} />)
     }, [currentPost]);
 
     if (userPost) return (

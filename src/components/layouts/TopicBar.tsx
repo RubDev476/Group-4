@@ -80,7 +80,7 @@ export default function TopicBar() {
     };
 
     return (
-        <nav className="topic-bar w-full" aria-label="Niches navigation">
+        <nav className="topic-bar w-full" aria-label="Topics navigation">
             <div className="topic-bar-inner">
                 <div className="topic-scroller-wrap relative">
                     {canScrollLeft && (
@@ -88,7 +88,7 @@ export default function TopicBar() {
                             type="button"
                             className="topic-scroll-arrow left all-center pointer"
                             onClick={() => scrollByAmount('left')}
-                            aria-label="Scroll niches left"
+                            aria-label="Scroll topics left"
                         >
                             <ChevronLeftRounded />
                         </button>
@@ -135,7 +135,7 @@ export default function TopicBar() {
                             type="button"
                             className="topic-scroll-arrow right all-center pointer"
                             onClick={() => scrollByAmount('right')}
-                            aria-label="Scroll niches right"
+                            aria-label="Scroll topics right"
                         >
                             <ChevronRightRounded />
                         </button>
@@ -148,7 +148,7 @@ export default function TopicBar() {
                     onClick={() => setNavModal(true)}
                 >
                     <AppsRounded className="pill-icon" />
-                    <span>All niches</span>
+                    <span>All topics</span>
                 </button>
             </div>
         </nav>

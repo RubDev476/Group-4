@@ -5,10 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AddRounded, AppsRounded, ArrowForwardRounded } from "@mui/icons-material";
-import { DocumentData } from "firebase/firestore";
 
 import { GlobalContext } from "@/src/app/providers";
 import { USERS } from "@/src/fakeData";
+import type { UserDbType } from "@/src/types";
 import { AvatarImg, SkeletonUser } from "../ui";
 
 export default function ImgHero() {
@@ -40,7 +40,7 @@ export default function ImgHero() {
                     <span className="hero-pill">Your feed · Zero algorithmic noise</span>
 
                     <h1 className="logo-font">
-                        Share freely across the niches you actually care about.
+                        Share freely across the topics you actually care about.
                     </h1>
 
                     <p className="hero-sub">
@@ -55,7 +55,7 @@ export default function ImgHero() {
 
                         <button type="button" className="hero-btn-secondary pointer" onClick={() => setNavModal(true)}>
                             <AppsRounded />
-                            <span>Explore niches</span>
+                            <span>Explore topics</span>
                         </button>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ export default function ImgHero() {
                         </>
                     )}
 
-                    {!isLoadingList && displayedCreators.slice(0, 4).map((creator: DocumentData) => (
+                    {!isLoadingList && displayedCreators.slice(0, 4).map((creator: UserDbType) => (
                         <Link
                             key={creator.uid}
                             href={`/u/${creator.displayName}`}
@@ -129,7 +129,7 @@ export default function ImgHero() {
                 </div>
 
                 <div className="side-card-stats">
-                    <span>28 Niches</span>
+                    <span>28 Topics</span>
                     <span>·</span>
                     <span>Chronological</span>
                     <span>·</span>

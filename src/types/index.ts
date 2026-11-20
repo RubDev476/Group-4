@@ -1,6 +1,3 @@
-import { User } from "firebase/auth";
-import { DocumentData } from "firebase/firestore";
-
 export interface GlobalContextType {
     navModal: boolean;
     formModal: boolean;
@@ -8,49 +5,44 @@ export interface GlobalContextType {
     setFormModal: React.Dispatch<React.SetStateAction<boolean>>;
     allPosts: AllPostsType[];
     setAllPosts: React.Dispatch<React.SetStateAction<AllPostsType[]>>;
-    allUsers: any;
+    allUsers: UserDbType[] | null;
     loadingData: boolean;
-    popularUsers: DocumentData[];
+    popularUsers: UserDbType[];
     loadingPopular: boolean;
-    setRefresh: React.Dispatch<React.SetStateAction<{refresh: boolean, redirectTo: string}>>;
-    user: User | null;
+    setRefresh: React.Dispatch<React.SetStateAction<{ refresh: boolean; redirectTo: string }>>;
+    user: UserDbType | null;
     fetchError: boolean;
 }
 
 export type RegisterType = {
-    name: string,
-    email: string,
-    password: string,
-    confirmPassword: string,
-}
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
 
 export type UserDbType = {
-    uid: string,
-    displayName: string | null,
-    photoURL: string | null,
-    dateRegister: string
-}
-
-export type PopularUsers = Pick<UserDbType, 'uid'> & {
-    totalLikesReceived: number;
-    totalCommentsReceived: number;
-}
+    uid: string;
+    displayName: string | null;
+    photoURL: string | null;
+    dateRegister: string;
+};
 
 export type LoginType = Pick<RegisterType, 'email' | 'password'>;
 
 type MainPostProperties = {
     title: string;
     description: string;
-}
+};
 
-export type UserFormType =  MainPostProperties & Pick<RegisterType, 'name'>;
+export type UserFormType = MainPostProperties & Pick<RegisterType, 'name'>;
 
 type GlobalTypesPost = {
     id: string;
     idUser: string;
     date: number;
     likes: string[];
-}
+};
 
 export interface ReplyTypes extends GlobalTypesPost {
     comment: string;
@@ -65,28 +57,7 @@ export interface PostTypes extends GlobalTypesPost, MainPostProperties {
     comments: CommentTypes[];
 }
 
-export type CreatePostArg = MainPostProperties & {
-    imgFile: File | null;
-    user: User;
-}
-
 export type AllPostsType = {
-    user: DocumentData;
-    posts: DocumentData;
-}
-
-export type AllUsersFetch = Map<string, DocumentData> | null;
-
-export type updatePostParams = {
-    idPost: string;
-    idCreator?: string;
-    key: string;
-    currentData?: number;
-    newData: CommentTypes[] | string[];
-}
-
-export type EditPost = MainPostProperties & {
-    idPost: string;
-    imgUrl: string | File | null;
-    deleteImg: boolean;
-}
+    user: UserDbType;
+    posts: PostTypes;
+};

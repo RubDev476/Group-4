@@ -1,27 +1,16 @@
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 
 import Post from "@/src/pageComponents/Post";
-import firebase from '@/src/firebase/firebase';
 import { POSTS } from '@/src/fakeData';
 
 import type { Params, DynamicParams } from '@/src/types/components-props';
 
 export async function generateMetadata(
-    { params, searchParams }: DynamicParams,
-    parent: ResolvingMetadata
+    { params }: DynamicParams
 ): Promise<Metadata> {
     const { id } = await params;
 
-    const fakePost = POSTS.find(item => item.posts.id === id)?.posts;
-    let post: any = fakePost;
-
-    if (!post) {
-        try {
-            post = await firebase.getData('posts', id);
-        } catch {
-            post = null;
-        }
-    }
+    const post = POSTS.find(item => item.posts.id === id)?.posts;
 
     if (!post) return { title: 'Post Not Found | myfeed' };
 
@@ -34,5 +23,5 @@ export async function generateMetadata(
 export default async function Page({ params }: Params) {
     const { id } = await params;
 
-    return <Post idPost={id} />
+    return <Post idPost={id} />;
 }

@@ -5,31 +5,28 @@ import Link from "next/link";
 
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 
-import { DocumentData } from "firebase/firestore";
-
 import { GlobalContext } from "@/src/app/providers";
 
 import { AvatarImg } from "../ui";
 
 import formatDate from "@/src/utilities/formatDate";
-import firebase from "@/src/firebase/firebase";
+import { handleLikes } from "@/src/utilities/handleLikes";
 import CommentOptions from "./CommentOptions";
 
+import type { CommentTypes, PostTypes, ReplyTypes, UserDbType } from "@/src/types";
 import type { ReplyProps } from "@/src/types/components-props";
-import { handleLikes } from "@/src/firebase/utils";
 import type { CommentActions } from "@/src/types/components-functions";
 
 export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
     const [edit, setEdit] = useState(false);
     const [commentEdit, setCommentEdit] = useState<string>(reply.comment);
-    const [userReply, setUserReply] = useState<DocumentData | undefined>(undefined);
+    const [userReply, setUserReply] = useState<UserDbType | undefined>(undefined);
 
     const { allUsers, setFormModal, user, allPosts, setAllPosts } = useContext(GlobalContext);
 
     useEffect(() => {
         if (allUsers) {
-            //const getUser = allUsers.get(reply.idUser);
-            const getUser = allUsers.find((user: any) => user.uid === reply.idUser);
+            const getUser = allUsers.find((u: UserDbType) => u.uid === reply.idUser);
 
             setUserReply(getUser);
         }
@@ -38,65 +35,32 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
     const likeToggle = async () => {
         if (!user) return setFormModal(true);
 
-        const {updatePosts, currentPosts} = update_state('like', user.uid);
-
-        try {
-            setAllPosts(updatePosts);
-
-            if (user.uid !== currentPost.idUser) await firebase.handleRecentActivity(user.uid, currentPost.idUser);
-
-            await update_db('like', user.uid);
-        } catch (error) {
-            console.log(error);
-
-            setAllPosts(currentPosts);
-        }
+        const { updatePosts } = update_state('like', user.uid);
+        setAllPosts(updatePosts);
     }
 
     const saveEditComment = async () => {
         if (commentEdit === reply.comment) return setEdit(false);
 
-        if(!user || commentEdit === '') return;
+        if (!user || commentEdit === '') return;
 
-        const {updatePosts, currentPosts} = update_state('edit', user.uid);
-
-        try {
-            setAllPosts(updatePosts);
-
-            if (user.uid !== currentPost.idUser) await firebase.handleRecentActivity(user.uid, currentPost.idUser);
-
-            await update_db('edit', user.uid);
-
-            setEdit(false);
-        } catch (error) {
-            console.log(error);
-
-            setAllPosts(currentPosts);
-        }
+        const { updatePosts } = update_state('edit', user.uid);
+        setAllPosts(updatePosts);
+        setEdit(false);
     }
 
     const deleteComm = async () => {
-        if(!user) return;
+        if (!user) return;
 
-        const {updatePosts, currentPosts} = update_state('delete', user.uid);
-
-        try {
-            await update_db('delete', user.uid);
-
-            setAllPosts(updatePosts);
-
-            setEdit(false);
-        } catch (error) {
-            console.log(error);
-
-            setAllPosts(currentPosts);
-        }
+        const { updatePosts } = update_state('delete', user.uid);
+        setAllPosts(updatePosts);
+        setEdit(false);
     }
 
     const update_state = (type: CommentActions, uid: string) => {        
         const currentPosts = [...allPosts];
 
-        let currentPost_state = JSON.parse(JSON.stringify(currentPost));
+        const currentPost_state: PostTypes = JSON.parse(JSON.stringify(currentPost));
 
         update_post(type, uid, currentPost_state);
 
@@ -108,31 +72,17 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
         }
     }
 
-    const update_db = async (type: CommentActions, uid: string) => {
-        const currentPost_db = await firebase.getData('posts', currentPost.id);
-
-        if(!currentPost_db) return;
-
-        update_post(type, uid, currentPost_db);
-
-        await firebase.updatePost({
-            idPost: currentPost.id,
-            key: 'comments',
-            newData: currentPost_db.comments 
-        })
-    }
-
-    const update_post = (type: CommentActions, uid: string, post: DocumentData) => {
-        const commentIndex = post.comments.findIndex((currentComment: any) => currentComment.id === commentId);
-        const replyIndex = post.comments[commentIndex].replies.findIndex((currentReply: any) => currentReply.id === reply.id);
+    const update_post = (type: CommentActions, uid: string, post: PostTypes) => {
+        const commentIndex = post.comments.findIndex((currentComment: CommentTypes) => currentComment.id === commentId);
+        const replyIndex = post.comments[commentIndex].replies.findIndex((currentReply: ReplyTypes) => currentReply.id === reply.id);
 
         if(replyIndex === -1 || commentIndex === -1) throw new Error('this reply does not exist...');
 
         switch (type) {
             case 'like': {
-                const currentLikes_db = post.comments[commentIndex].replies[replyIndex].likes;
+                const currentLikes = post.comments[commentIndex].replies[replyIndex].likes;
 
-                post.comments[commentIndex].replies[replyIndex].likes = handleLikes(currentLikes_db, uid);
+                post.comments[commentIndex].replies[replyIndex].likes = handleLikes(currentLikes, uid);
 
                 break;
             }
@@ -142,7 +92,7 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                 break;
             }
             case 'delete': {
-                post.comments[commentIndex].replies = post.comments[commentIndex].replies.filter((com: DocumentData) => com.id !== reply.id);
+                post.comments[commentIndex].replies = post.comments[commentIndex].replies.filter((com: ReplyTypes) => com.id !== reply.id);
 
                 break;
             }

@@ -9,7 +9,7 @@ export default function AsideRight() {
 
             <div className="about-card">
                 <span className="about-badge">myfeed</span>
-                <h4 className="logo-font">Your feed, your niches</h4>
+                <h4 className="logo-font">Your feed, your topics</h4>
                 <p>
                     Share freely across gaming, cinema, books, history, TV, and more — without random algorithms deciding what you see.
                 </p>

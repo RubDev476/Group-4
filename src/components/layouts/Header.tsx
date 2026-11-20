@@ -18,7 +18,6 @@ import {
     DarkMode,
     AddRounded,
 } from "@mui/icons-material"; 
-import firebase from "@/src/firebase/firebase";
 
 function BrandMark() {
     return (
@@ -51,19 +50,6 @@ export default function Header() {
         setMounted(true);
     }, [])
 
-    //get auth user
-    useEffect(() => {
-        if (user)  handlePopular(user.uid);
-
-        console.log(user);
-    }, [user])
-
-    const handlePopular = async (uid: string) => {
-        const getPopulars = await firebase.getData('popularUsers', uid);
-
-        if(!getPopulars) await firebase.createPopularUser(uid);
-    }
-
     const toggleMenu = () => setNavModal(!navModal);
 
     const toggleSearch = () => {
@@ -84,7 +70,7 @@ export default function Header() {
                             type="button"
                             onClick={toggleMenu}
                             className="icon-btn menu-toggle-btn pointer"
-                            aria-label="Toggle niches drawer"
+                            aria-label="Toggle topics drawer"
                         >
                             {!navModal ? (
                                 <MenuIcon className="icon" />
@@ -104,7 +90,7 @@ export default function Header() {
 
                         <nav className="header-nav" aria-label="Main navigation">
                             <Link href="/" className={path === '/' ? 'active' : ''}>Explore</Link>
-                            <button type="button" className="pointer" onClick={() => setNavModal(true)}>Niches</button>
+                            <button type="button" className="pointer" onClick={() => setNavModal(true)}>Topics</button>
                         </nav>
                     </div>
                 )}
@@ -124,7 +110,7 @@ export default function Header() {
                         <Search className="icon-label" />
                     </label>
 
-                    <input type="text" placeholder="Search stories, niches, or @creators..." id="search" className="w-full h-full relative" />
+                    <input type="text" placeholder="Search stories, topics, or @creators..." id="search" className="w-full h-full relative" />
                 </form>
 
                 <div className="all-center header-right">
