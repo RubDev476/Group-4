@@ -103,7 +103,7 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 
 ## Requisitos previos
 
-- **Node.js** `>= 18.18` (recomendado `v20+`)
+- **Node.js** `26.x`
 - **npm** `>= 9`
 
 ---
