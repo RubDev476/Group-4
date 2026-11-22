@@ -27,13 +27,12 @@ vi.mock('next/navigation', () => ({
 
 // Global next/image mock rendering a standard <img> tag in jsdom
 vi.mock('next/image', () => ({
-    default: ({
-        src,
-        alt,
-        fill: _fill,
-        priority: _priority,
-        ...rest
-    }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => {
+    default: (
+        props: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }
+    ) => {
+        const { src, alt, ...rest } = props;
+        delete rest.fill;
+        delete rest.priority;
         const resolvedSrc = typeof src === 'string' ? src : '';
         return React.createElement('img', { src: resolvedSrc, alt: alt ?? '', ...rest });
     },

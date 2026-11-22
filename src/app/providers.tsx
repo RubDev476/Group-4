@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useMemo, createContext } from 'react';
+import { useState, useEffect, useMemo, useCallback, createContext } from 'react';
 
 import { AllPostsType, GlobalContextType, UserDbType } from '../types';
 import { POSTS, USERS } from '../fakeData';
@@ -20,7 +20,7 @@ const defaultValues: GlobalContextType = {
     loadingPopular: true,
     setRefresh: () => {},
     user: null,
-    fetchError: false
+    fetchError: false,
 };
 
 export const GlobalContext = createContext<GlobalContextType>(defaultValues);
@@ -28,39 +28,37 @@ export const GlobalContext = createContext<GlobalContextType>(defaultValues);
 export function Providers({ children }: { children: React.ReactNode }) {
     const [navModal, setNavModal] = useState(false);
     const [formModal, setFormModal] = useState(false);
-    const [loadingData, setLoadingData] = useState(true);
-    const [loadingPopular, setLoadingPopular] = useState(true);
+    const [loadingData, setLoadingData] = useState(false);
+    const [loadingPopular, setLoadingPopular] = useState(false);
 
-    const [popularUsers, setPopularUsers] = useState<UserDbType[]>([]);
-    const [allPosts, setAllPosts] = useState<AllPostsType[]>([]);
-    const [allUsers, setAllUsers] = useState<UserDbType[] | null>(null);
+    const [popularUsers, setPopularUsers] = useState<UserDbType[]>(USERS);
+    const [allPosts, setAllPosts] = useState<AllPostsType[]>(POSTS);
+    const [allUsers, setAllUsers] = useState<UserDbType[] | null>(USERS);
     const [user] = useState<UserDbType | null>(null);
     const [fetchError] = useState(false);
 
-    const [refresh, setRefresh] = useState({ refresh: false, redirectTo: '' });
-
     const router = useRouter();
 
-    const loadFakeData = () => {
-        setAllPosts(POSTS);
-        setAllUsers(USERS);
-        setPopularUsers(USERS);
-        setLoadingData(false);
-        setLoadingPopular(false);
-    };
+    const setRefresh = useCallback<React.Dispatch<React.SetStateAction<{ refresh: boolean; redirectTo: string }>>>(
+        (action) => {
+            const next = typeof action === 'function'
+                ? action({ refresh: false, redirectTo: '' })
+                : action;
 
-    useEffect(() => {
-        loadFakeData();
-    }, []);
+            if (next.refresh) {
+                setAllPosts(POSTS);
+                setAllUsers(USERS);
+                setPopularUsers(USERS);
+                setLoadingData(false);
+                setLoadingPopular(false);
 
-    useEffect(() => {
-        if (refresh.refresh) {
-            loadFakeData();
-            setRefresh(prev => ({ ...prev, refresh: false }));
-
-            if (refresh.redirectTo !== '') router.push(refresh.redirectTo);
-        }
-    }, [refresh, router]);
+                if (next.redirectTo !== '') {
+                    router.push(next.redirectTo);
+                }
+            }
+        },
+        [router]
+    );
 
     useEffect(() => {
         document.body.classList.toggle('no-scrollY', navModal || formModal);
@@ -85,7 +83,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             user,
             fetchError,
         }),
-        [navModal, formModal, allPosts, allUsers, loadingData, popularUsers, loadingPopular, user, fetchError]
+        [navModal, formModal, allPosts, allUsers, loadingData, popularUsers, loadingPopular, setRefresh, user, fetchError]
     );
 
     return (

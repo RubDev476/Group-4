@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useContext, useCallback, useMemo } from "react";
+import { useState, useContext, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { ArrowBackRounded } from "@mui/icons-material";
 
@@ -10,12 +10,15 @@ import { FormComment } from "@/src/components/forms";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import type { CommentTypes } from "@/src/types";
+import type { AllPostsType, CommentTypes } from "@/src/types";
 import type { PostProps } from "../types/components-props";
 
 export default function Post({ idPost }: PostProps) {
-    const [formComment, setFormComment] = useState(false);
-    const [commentId, setCommentId] = useState<string>('');
+    const [commentFormForPost, setCommentFormForPost] = useState<AllPostsType | null>(null);
+    const [replyState, setReplyState] = useState<{ post: AllPostsType | null; commentId: string }>({
+        post: null,
+        commentId: '',
+    });
 
     const { allPosts, loadingData, setFormModal, user } = useContext(GlobalContext);
 
@@ -24,22 +27,32 @@ export default function Post({ idPost }: PostProps) {
         [allPosts, idPost]
     );
 
-    const resetFormComment = useCallback(() => {
-        setFormComment(false);
-        setCommentId('');
-    }, []);
+    const formComment = currentPost !== null && commentFormForPost === currentPost;
+    const commentId = currentPost !== null && replyState.post === currentPost ? replyState.commentId : '';
 
-    useEffect(() => {
-        resetFormComment();
-    }, [currentPost, resetFormComment]);
+    const setCommentId = useCallback<React.Dispatch<React.SetStateAction<string>>>(
+        (value) => {
+            setReplyState((prev) => {
+                const prevId = prev.post === currentPost ? prev.commentId : '';
+                const nextId = typeof value === 'function' ? value(prevId) : value;
+                return { post: currentPost, commentId: nextId };
+            });
+        },
+        [currentPost]
+    );
+
+    const resetFormComment = useCallback(() => {
+        setCommentFormForPost(null);
+        setReplyState({ post: null, commentId: '' });
+    }, []);
 
     const addCommentBtn = useCallback(() => {
         if (!user) {
             setFormModal(true);
             return;
         }
-        setFormComment(true);
-    }, [user, setFormModal]);
+        setCommentFormForPost(currentPost);
+    }, [user, setFormModal, currentPost]);
 
     if (loadingData) return null;
 
@@ -61,7 +74,11 @@ export default function Post({ idPost }: PostProps) {
                     <div className="comments-header flex align-center justify-between">
                         <h4 className="logo-font">Discussion</h4>
                         {!formComment && (
-                            <button onClick={addCommentBtn} className="btn-add-comment all-center pointer border-color">
+                            <button
+                                type="button"
+                                onClick={addCommentBtn}
+                                className="btn-add-comment all-center pointer border-color"
+                            >
                                 <span className="all-center">+</span> Add comment
                             </button>
                         )}

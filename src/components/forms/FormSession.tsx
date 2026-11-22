@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { GlobalContext } from "@/src/app/providers";
 import { FormLogin, FormRegister } from '@/src/components/forms';
@@ -11,19 +11,19 @@ export default function FormSession() {
     const [formRegister, setFormRegister] = useState(false);
     const { setFormModal, user, setRefresh, formModal } = useContext(GlobalContext);
 
-    const [success, setSuccess] = useState(false);
     const [errorSubmit, setErrorSubmit] = useState<string>('');
     const [activeFields, setActiveFields] = useState<Record<string, boolean>>({});
 
-    useEffect(() => {
-        if (success && user) {
-            setSuccess(false);
-
-            setRefresh({ refresh: true, redirectTo: `/u/${user.displayName}` });
-
-            setFormModal(false);
-        }
-    }, [success, setFormModal, setRefresh, user]);
+    const handleSuccess = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+        (value) => {
+            const next = typeof value === 'function' ? value(false) : value;
+            if (next && user) {
+                setRefresh({ refresh: true, redirectTo: `/u/${user.displayName}` });
+                setFormModal(false);
+            }
+        },
+        [user, setRefresh, setFormModal]
+    );
 
     const closeLoginModal = (e: React.MouseEvent<HTMLElement>): void => {
         const target = e.target as HTMLElement;
@@ -65,7 +65,7 @@ export default function FormSession() {
                         setFormRegister={setFormRegister}
                         blur={blur}
                         activeFields={activeFields}
-                        setSuccess={setSuccess}
+                        setSuccess={handleSuccess}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
                         setFormModal={setFormModal}
@@ -77,7 +77,7 @@ export default function FormSession() {
                         setFormRegister={setFormRegister}
                         blur={blur}
                         activeFields={activeFields}
-                        setSuccess={setSuccess}
+                        setSuccess={handleSuccess}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
                     />

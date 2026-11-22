@@ -1,26 +1,23 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 import { MenuItem, ListItemIcon, IconButton } from "@mui/material";
 import { MoreHoriz, Delete, Edit } from '@mui/icons-material';
 
 import themeColors from "@/src/utilities/themeColors";
+import { useIsMounted } from "@/src/utilities/useIsMounted";
 import StyledMenu, { getMenuItemHoverSx } from "@/src/components/ui/StyledMenu";
 
 import type { CommentOptionsProps } from '@/src/types/components-props';
 
 export default function CommentOptions({ deleteF, setEdit }: CommentOptionsProps) {
     const menuId = useId();
-    const [mounted, setMounted] = useState(false);
+    const mounted = useIsMounted();
     const { theme } = useTheme();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     if (!mounted || !theme) return null;
 

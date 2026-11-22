@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useId, useState } from 'react';
+import { useContext, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -8,6 +8,7 @@ import { MenuItem, ListItemIcon, IconButton } from "@mui/material";
 import { MoreHoriz, Delete, Edit } from '@mui/icons-material';
 
 import themeColors from "@/src/utilities/themeColors";
+import { useIsMounted } from "@/src/utilities/useIsMounted";
 import { GlobalContext } from "@/src/app/providers";
 import StyledMenu, { getMenuItemHoverSx } from "@/src/components/ui/StyledMenu";
 
@@ -15,7 +16,7 @@ import type { PostProps } from '@/src/types/components-props';
 
 export default function PostOptions({ idPost }: PostProps) {
     const menuId = useId();
-    const [mounted, setMounted] = useState(false);
+    const mounted = useIsMounted();
     const { theme } = useTheme();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -23,10 +24,6 @@ export default function PostOptions({ idPost }: PostProps) {
     const path = usePathname();
     const router = useRouter();
     const { setAllPosts, allPosts, user } = useContext(GlobalContext);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     if (!mounted || !theme) return null;
 

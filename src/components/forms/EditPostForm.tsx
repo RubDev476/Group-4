@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -8,37 +8,41 @@ import Dropzone from "./Dropzone";
 import PostFields from "./PostFields";
 import { AvatarImg } from "../ui";
 
-import { PostTypes, UserFormType } from '@/src/types';
+import type { UserFormType } from '@/src/types';
 import type { PostProps } from "@/src/types/components-props";
 
 import { GlobalContext } from "@/src/app/providers";
 
 export default function EditPostForm({ idPost }: PostProps) {
-    const [imgFile, setImgFile] = useState<File | null | string>(null)
-    const [loadingPage, setLoadingPage] = useState(true);
+    const [imgFileOverride, setImgFileOverride] = useState<File | null | string | undefined>(undefined);
     const [errorImg, setErrorImg] = useState<string>('');
-    const [currentPost, setCurrentPost] = useState<PostTypes | undefined>(undefined);
 
     const { register, handleSubmit, formState: { errors } } = useForm<UserFormType>();
 
     const router = useRouter();
-
     const { user, allPosts, loadingData } = useContext(GlobalContext);
 
+    const currentPost = useMemo(() => {
+        if (!user) return undefined;
+        const found = allPosts.find((data) => data.posts.id === idPost);
+        return found && found.posts.idUser === user.uid ? found.posts : undefined;
+    }, [allPosts, idPost, user]);
+
+    const imgFile: File | null | string =
+        imgFileOverride === undefined ? (currentPost?.imgUrl ?? null) : imgFileOverride;
+
+    const handleImgChange: React.Dispatch<React.SetStateAction<File | null | string>> = (value) => {
+        setImgFileOverride((prev) => {
+            const current = prev === undefined ? (currentPost?.imgUrl ?? null) : prev;
+            return typeof value === 'function' ? value(current) : value;
+        });
+    };
+
     useEffect(() => {
-        if (!loadingData && loadingPage) {
-            const getPost = allPosts.find(data => data.posts.id === idPost);
-
-            if (getPost && user && getPost.posts.idUser === user.uid) {
-                setCurrentPost(getPost.posts);
-                setImgFile(getPost.posts.imgUrl);
-            }
-
-            setLoadingPage(false);
+        if (!loadingData && (!user || !currentPost)) {
+            router.push('/');
         }
-
-        if (!loadingPage && (!user || !currentPost)) router.push('/');
-    }, [loadingPage, loadingData, user, allPosts, idPost, currentPost, router]);
+    }, [loadingData, user, currentPost, router]);
 
     const onSubmit: SubmitHandler<UserFormType> = () => {
         if (!currentPost) return;
@@ -46,7 +50,9 @@ export default function EditPostForm({ idPost }: PostProps) {
         router.push('/p/' + idPost);
     };
 
-    if (user && currentPost) return (
+    if (!user || !currentPost) return null;
+
+    return (
         <div className="user-form-container">
             <h3>Edit post</h3>
 
@@ -58,7 +64,7 @@ export default function EditPostForm({ idPost }: PostProps) {
                         user={user}
                     />
 
-                    <span>{'@' + user?.displayName} </span>
+                    <span>{'@' + user.displayName} </span>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -76,23 +82,37 @@ export default function EditPostForm({ idPost }: PostProps) {
                             <p className={`${errorImg !== '' ? 'error' : ''}`}>{'Choose/change your photo:'}</p>
 
                             <Dropzone
-                                getImg={setImgFile}
+                                getImg={handleImgChange}
                                 img={imgFile}
                                 setErrorImg={setErrorImg}
                                 errorImg={errorImg}
                             />
 
-                            {imgFile && <button type="button" className="bg-hover-2 pointer" onClick={() => setImgFile(null)}>Replace / Cancel</button>}
+                            {imgFile && (
+                                <button
+                                    type="button"
+                                    className="bg-hover-2 pointer"
+                                    onClick={() => setImgFileOverride(null)}
+                                >
+                                    Replace / Cancel
+                                </button>
+                            )}
                         </div>
 
                         <div className="actions-post">
                             <button className="w-full create-btn pointer" type="submit">Update post</button>
 
-                            <button className="w-full cancel-btn bg-hover-2 pointer" onClick={() => router.push('/')} type="button">Cancel</button>
+                            <button
+                                className="w-full cancel-btn bg-hover-2 pointer"
+                                onClick={() => router.push('/')}
+                                type="button"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }

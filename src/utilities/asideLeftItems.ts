@@ -52,8 +52,8 @@ export interface TopicIcon {
     title: string;
     slug: string;
     path: string;
-    icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {muiName: string;};
-    iconPath?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {muiName: string;};
+    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & {muiName: string;};
+    iconPath?: OverridableComponent<SvgIconTypeMap<object, "svg">> & {muiName: string;};
 }
 
 export const topicIcons: TopicIcon[] = [

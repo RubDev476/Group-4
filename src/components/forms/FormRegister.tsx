@@ -1,11 +1,15 @@
 'use client';
 
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, SubmitHandler } from "react-hook-form";
 import { RegisterType } from "@/src/types";
 import type { FormsSessionProps } from "@/src/types/components-props";
 
 export default function FormRegister({ select, setFormRegister, blur, activeFields, setSuccess, errorSubmit }: FormsSessionProps) {
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterType>();
+    const { register, handleSubmit, control, formState: { errors } } = useForm<RegisterType>();
+    const [passwordValue, confirmPasswordValue] = useWatch({
+        control,
+        name: ['password', 'confirmPassword'],
+    });
 
     const onSubmit: SubmitHandler<RegisterType> = (data) => {
         if (data.password !== data.confirmPassword) return;
@@ -99,7 +103,7 @@ export default function FormRegister({ select, setFormRegister, blur, activeFiel
                         autoComplete="new-password"
                     />
 
-                    {(watch('password') !== undefined && watch('confirmPassword') !== undefined) && (watch('confirmPassword') !== watch('password') && <span className="error-input">Password does not match*</span>)}
+                    {(passwordValue !== undefined && confirmPasswordValue !== undefined) && (confirmPasswordValue !== passwordValue && <span className="error-input">Password does not match*</span>)}
                 </div>
 
                 <p>Already a member of myfeed? <button type="button" className="form-switch-btn pointer" onClick={() => setFormRegister(false)}>Sign in</button></p>

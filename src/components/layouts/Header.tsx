@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes';
 import { useState, useEffect, useContext } from "react";
 
 import { GlobalContext } from "@/src/app/providers";
+import { useIsMounted } from "@/src/utilities/useIsMounted";
 
 import { Skeleton as SkeletonComponent, UserOptions } from "../ui";
 
@@ -32,7 +33,7 @@ function BrandMark() {
 }
 
 export default function Header() {
-    const [mounted, setMounted] = useState(false);
+    const mounted = useIsMounted();
     const [searchActive, setSearchActive] = useState(false);
 
     const { theme, setTheme } = useTheme();
@@ -48,7 +49,6 @@ export default function Header() {
         };
 
         window.addEventListener('resize', handleResize);
-        setMounted(true);
 
         return () => window.removeEventListener('resize', handleResize);
     }, []);
