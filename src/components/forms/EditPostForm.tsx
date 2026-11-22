@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Dropzone from "./Dropzone";
+import PostFields from "./PostFields";
 import { AvatarImg } from "../ui";
 
 import { PostTypes, UserFormType } from '@/src/types';
@@ -39,11 +40,11 @@ export default function EditPostForm({ idPost }: PostProps) {
         if (!loadingPage && (!user || !currentPost)) router.push('/');
     }, [loadingPage, loadingData, user, allPosts, idPost, currentPost, router]);
 
-    const onSubmit: SubmitHandler<UserFormType> = async (data) => {
+    const onSubmit: SubmitHandler<UserFormType> = () => {
         if (!currentPost) return;
 
         router.push('/p/' + idPost);
-    }
+    };
 
     if (user && currentPost) return (
         <div className="user-form-container">
@@ -62,50 +63,14 @@ export default function EditPostForm({ idPost }: PostProps) {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="inputs-container w-full relative">
-                        <p>Title:</p>
-
-                        <input
-                            className="bg-input"
-                            type="text"
-                            id="title-post"
-                            placeholder="Post title"
-                            {...register('title', {
-                                value: currentPost.title,
-                                required: {
-                                    value: true,
-                                    message: 'required*'
-                                },
-                                maxLength: {
-                                    value: 60,
-                                    message: 'Max. 60 chars.*'
-                                }
-                            })}
+                        <PostFields
+                            register={register}
+                            errors={errors}
+                            defaultTitle={currentPost.title}
+                            defaultDescription={currentPost.description}
+                            requiredTitleMessage="required*"
+                            requiredDescriptionMessage="required*"
                         />
-
-                        {errors.title && <span className="error-input">{errors.title.message}</span>}
-
-                        <div className="relative">
-                            <p>Description:</p>
-
-                            <textarea
-                                {...register("description", {
-                                    value: currentPost.description,
-                                    required: {
-                                        value: true,
-                                        message: 'required*'
-                                    },
-                                    maxLength: {
-                                        value: 300,
-                                        message: 'Max. 300 chars.*'
-                                    }
-                                })}
-                                className="w-full bg-input"
-                                id="description-post"
-                                placeholder="Post description"
-                            />
-
-                            {errors.description && <span className="error-input">{errors.description.message}</span>}
-                        </div>
 
                         <div className="dropzone-main-container relative">
                             <p className={`${errorImg !== '' ? 'error' : ''}`}>{'Choose/change your photo:'}</p>

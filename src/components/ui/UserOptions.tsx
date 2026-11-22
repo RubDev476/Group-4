@@ -4,22 +4,18 @@ import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AvatarImg from "./AvatarImg";
+import StyledMenu, { getMenuItemHoverSx } from "./StyledMenu";
 
 import { styled } from '@mui/material/styles';
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-
 import {
-    Menu,
     MenuItem,
     ListItemIcon,
     Divider,
     IconButton,
     Tooltip,
 } from "@mui/material";
-
 import { Settings, Logout, Create } from "@mui/icons-material";
-
-import themeColors from "@/src/utilities/themeColors";
 
 import type { UserOptionsProps } from "@/src/types/components-props";
 
@@ -39,14 +35,12 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
     const menuId = useId();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-
-    const menuItemHover = { ":hover": { backgroundColor: `${themeColors.itemHover[theme]}` } };
-
+    const menuItemHover = getMenuItemHoverSx(theme);
     const router = useRouter();
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
-    const logout = async () => {};
+    const logout = () => {};
 
     return (
         <>
@@ -68,46 +62,12 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
                 </IconButton>
             </CustomTooltip>
 
-            <Menu
-                anchorEl={anchorEl}
+            <StyledMenu
                 id={menuId}
+                anchorEl={anchorEl}
                 open={open}
+                theme={theme}
                 onClose={() => setAnchorEl(null)}
-                onClick={() => setAnchorEl(null)}
-                slotProps={{
-                    paper: {
-                        elevation: 0,
-                        sx: {
-                            backgroundColor: themeColors.bgColor[theme],
-                            color: themeColors.color[theme],
-                            border: `1px solid ${themeColors.border[theme]}`,
-                            borderRadius: '14px',
-                            overflow: 'visible',
-                            filter: 'drop-shadow(0px 8px 24px rgba(0,0,0,0.22))',
-                            mt: 1.5,
-                            '& .MuiAvatar-root': {
-                                width: 32,
-                                height: 32,
-                                ml: -0.5,
-                                mr: 1,
-                            },
-                            '&::before': {
-                                content: '""',
-                                display: 'block',
-                                position: 'absolute',
-                                top: 0,
-                                right: 14,
-                                width: 10,
-                                height: 10,
-                                bgcolor: themeColors.bgColor[theme],
-                                transform: 'translateY(-50%) rotate(45deg)',
-                                zIndex: 0,
-                            },
-                        },
-                    }
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={() => router.push(`/u/${user.displayName}`)} sx={menuItemHover}>
                     <AvatarImg
@@ -141,7 +101,7 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
                     </ListItemIcon>
                     Log out
                 </MenuItem>
-            </Menu>
+            </StyledMenu>
         </>
-    )
+    );
 }

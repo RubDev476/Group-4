@@ -6,29 +6,25 @@ import Link from "next/link";
 import { FavoriteBorder, ChatBubbleOutline, Favorite } from '@mui/icons-material';
 
 import { GlobalContext } from "@/src/app/providers";
-
 import formatDate from "@/src/utilities/formatDate";
-import { handleLikes } from "@/src/utilities/handleLikes";
+import { mutateComment } from "@/src/utilities/postMutations";
 
 import { AvatarImg } from "../ui";
 import CommentOptions from "./CommentOptions";
 
-import type { CommentTypes, PostTypes } from "@/src/types";
 import type { CommentProps } from "@/src/types/components-props";
-import { CommentActions } from "@/src/types/components-functions";
 
-export default function Comment({commentDoc, setCommentId, currentPost, userPost}: CommentProps) {
+export default function Comment({ commentDoc, setCommentId, currentPost, userPost }: CommentProps) {
     const [edit, setEdit] = useState(false);
     const [commentEdit, setCommentEdit] = useState<string>(commentDoc.comment);
 
     const { setFormModal, user, allPosts, setAllPosts } = useContext(GlobalContext);
 
-    const likeToggle = async () => {
+    const likeToggle = () => {
         if (!user) return setFormModal(true);
 
-        const { updatePosts } = update_state('like', user.uid);
-        setAllPosts(updatePosts);
-    }
+        setAllPosts(mutateComment(allPosts, currentPost.id, commentDoc.id, 'like', user.uid));
+    };
 
     const saveEditComment = () => {
         const trimmed = commentEdit.trim();
@@ -38,8 +34,7 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
         }
         if (!user || trimmed === '') return;
 
-        const { updatePosts } = update_state('edit', user.uid, trimmed);
-        setAllPosts(updatePosts);
+        setAllPosts(mutateComment(allPosts, currentPost.id, commentDoc.id, 'edit', user.uid, trimmed));
         setEdit(false);
     };
 
@@ -51,48 +46,7 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
     const deleteComm = () => {
         if (!user) return;
 
-        const { updatePosts } = update_state('delete', user.uid);
-        setAllPosts(updatePosts);
-    };
-
-    const update_post = (type: CommentActions, post: PostTypes, uid: string, editedText?: string) => {
-        const currentIndexComment = post.comments.findIndex((currentComment: CommentTypes) => currentComment.id === commentDoc.id);
-
-        if (currentIndexComment === -1) throw new Error('this comment does not exist...');
-
-        switch (type) {
-            case 'like': {
-                const currentLikes: string[] = post.comments[currentIndexComment].likes;
-
-                post.comments[currentIndexComment].likes = handleLikes(currentLikes, uid);
-                
-                break;
-            }
-            case 'edit': {
-                post.comments[currentIndexComment].comment = editedText ?? commentEdit;
-
-                break;
-            }
-            case 'delete': {
-                post.comments = post.comments.filter((currentComment: CommentTypes) => currentComment.id !== commentDoc.id);  
-
-                break;
-            }
-
-            default: break;
-        }
-    };
-
-    const update_state = (type: CommentActions, uid: string, editedText?: string) => {
-        const newPost: PostTypes = JSON.parse(JSON.stringify(currentPost));
-
-        update_post(type, newPost, uid, editedText);
-
-        const updatePosts = allPosts.map(data => data.posts.id === currentPost.id ? { ...data, posts: newPost } : data);
-
-        return {
-            updatePosts
-        };
+        setAllPosts(mutateComment(allPosts, currentPost.id, commentDoc.id, 'delete', user.uid));
     };
 
     const replyBtn = () => {
@@ -105,6 +59,8 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
         setCommentEdit(commentDoc.comment);
         setEdit(value);
     };
+
+    const isLiked = Boolean(user && commentDoc.likes.includes(user.uid));
 
     return (
         <div className="comment-container relative w-full">
@@ -148,10 +104,10 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                                 type="button"
                                 className="comment-action-btn relative like all-center pointer bg-hover"
                                 onClick={likeToggle}
-                                aria-label={(user && commentDoc.likes.includes(user.uid)) ? 'Unlike comment' : 'Like comment'}
-                                aria-pressed={Boolean(user && commentDoc.likes.includes(user.uid))}
+                                aria-label={isLiked ? 'Unlike comment' : 'Like comment'}
+                                aria-pressed={isLiked}
                             >
-                                {(user && commentDoc.likes.includes(user.uid)) ? (
+                                {isLiked ? (
                                     <Favorite className='icon like-color' />
                                 ) : (
                                     <FavoriteBorder className='icon' />
@@ -183,5 +139,5 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                 </div>
             </div>
         </div>
-    )
+    );
 }

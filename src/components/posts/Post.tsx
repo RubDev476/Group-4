@@ -10,7 +10,7 @@ import { FavoriteBorder, ChatBubbleOutline, IosShare, Favorite } from '@mui/icon
 import { AvatarImg } from '../ui';
 
 import formatDate from '@/src/utilities/formatDate';
-import { handleLikes } from '@/src/utilities/handleLikes';
+import { togglePostLike } from '@/src/utilities/postMutations';
 import PostOptions from './PostOptions';
 
 import { GlobalContext } from "@/src/app/providers";
@@ -42,29 +42,11 @@ export default function Post({ postData, creator }: PostComponentProps) {
 
     const totalComments = (): number => postData.comments.reduce((total: number, comment: CommentTypes) => total + (comment.replies.length || 0), postData.comments.length);
 
-    const likeToggle = async () => {
+    const likeToggle = () => {
         if (!user) return setFormModal(true);
 
-        const { updatePosts } = update_state(user.uid);
-        setAllPosts(updatePosts);
-    }
-
-    //Modify data only for the state
-    const update_state = (uid: string) => {
-        const currentPosts = [...allPosts];
-
-        const currentPost_state = JSON.parse(JSON.stringify(postData));
-
-        const currentLikes_state: string[] = JSON.parse(JSON.stringify(postData.likes));
-        currentPost_state.likes = handleLikes(currentLikes_state, uid);
-
-        const updatePosts = allPosts.map(data => data.posts.id === postData.id ? { ...data, posts: currentPost_state } : data);
-
-        return {
-            currentPosts,
-            updatePosts
-        }
-    }
+        setAllPosts(togglePostLike(allPosts, postData.id, user.uid));
+    };
 
     const redirectPost = () => {
         if(path.includes('/p/')) return;

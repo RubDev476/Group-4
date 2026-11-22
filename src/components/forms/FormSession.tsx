@@ -7,23 +7,23 @@ import { FormLogin, FormRegister } from '@/src/components/forms';
 
 import { Close } from "@mui/icons-material";
 
-export default function FormSesion() {
+export default function FormSession() {
     const [formRegister, setFormRegister] = useState(false);
     const { setFormModal, user, setRefresh, formModal } = useContext(GlobalContext);
 
-    const [succes, setSucces] = useState(false);
+    const [success, setSuccess] = useState(false);
     const [errorSubmit, setErrorSubmit] = useState<string>('');
     const [activeFields, setActiveFields] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
-        if (succes && user) {
-            setSucces(false);
+        if (success && user) {
+            setSuccess(false);
 
             setRefresh({ refresh: true, redirectTo: `/u/${user.displayName}` });
 
             setFormModal(false);
         }
-    }, [succes, setFormModal, setRefresh, user]);
+    }, [success, setFormModal, setRefresh, user]);
 
     const closeLoginModal = (e: React.MouseEvent<HTMLElement>): void => {
         const target = e.target as HTMLElement;
@@ -65,7 +65,7 @@ export default function FormSesion() {
                         setFormRegister={setFormRegister}
                         blur={blur}
                         activeFields={activeFields}
-                        setSucces={setSucces}
+                        setSuccess={setSuccess}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
                         setFormModal={setFormModal}
@@ -77,7 +77,7 @@ export default function FormSesion() {
                         setFormRegister={setFormRegister}
                         blur={blur}
                         activeFields={activeFields}
-                        setSucces={setSucces}
+                        setSuccess={setSuccess}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
                     />

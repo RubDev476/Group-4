@@ -1,35 +1,30 @@
 'use client';
 
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext } from "react";
 
 import { GlobalContext } from "@/src/app/providers";
-
 import { FormComment } from "@/src/components/forms";
 import { Reply, Comment } from "@/src/components/posts";
 
 import type { ReplyTypes, UserDbType } from "@/src/types";
 import type { CommentsContainerProps } from "@/src/types/components-props";
 
-export default function CommentsContainer({ commentDoc, setCommentId, currentPost, commentId, resetFormComment}: CommentsContainerProps) {
+export default function CommentsContainer({
+    commentDoc,
+    setCommentId,
+    currentPost,
+    commentId,
+    resetFormComment,
+}: CommentsContainerProps) {
     const { allUsers } = useContext(GlobalContext);
 
-    const [userPost, setUserPost] = useState<UserDbType | undefined>(undefined);
+    const userPost = allUsers?.find((user: UserDbType) => user.uid === commentDoc.idUser);
 
-    useEffect(() => {
-        if (allUsers) {
-            const getUser = allUsers.find((user: UserDbType) => user.uid === commentDoc.idUser);
+    if (!userPost) return null;
 
-            setUserPost(getUser);
-        }
-    }, [allUsers, commentDoc])
-
-    const memoizedReplies = useMemo(() => {
-        return commentDoc.replies.length > 0 && commentDoc.replies.map((res: ReplyTypes) => <Reply key={res.id} reply={res} currentPost={currentPost} commentId={commentDoc.id} />);
-    }, [commentDoc.id, commentDoc.replies, currentPost]);
-
-    if (userPost) return (
+    return (
         <div className="comment-main-container w-full">
-            <Comment 
+            <Comment
                 userPost={userPost}
                 commentDoc={commentDoc}
                 setCommentId={setCommentId}
@@ -47,7 +42,14 @@ export default function CommentsContainer({ commentDoc, setCommentId, currentPos
                 </div>
             )}
 
-            {memoizedReplies}
+            {commentDoc.replies.map((reply: ReplyTypes) => (
+                <Reply
+                    key={reply.id}
+                    reply={reply}
+                    currentPost={currentPost}
+                    commentId={commentDoc.id}
+                />
+            ))}
         </div>
-    )
+    );
 }

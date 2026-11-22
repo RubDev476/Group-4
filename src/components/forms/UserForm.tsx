@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Dropzone from "./Dropzone";
+import PostFields from "./PostFields";
 import { AvatarImg } from "../ui";
 
 import { UserFormType } from '@/src/types';
@@ -37,11 +38,11 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
         if (!user && !loadingData) router.push('/');
     }, [loadingData, user, router]);
 
-    const onSubmit: SubmitHandler<UserFormType> = async () => {
+    const onSubmit: SubmitHandler<UserFormType> = () => {
         if (typeof imgFile === 'string' || !user) return;
 
         router.push('/');
-    }
+    };
 
     if (loadingData && !user) return null;
 
@@ -95,54 +96,7 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
                         )}
 
                         {typeForm === 'createPost' && (
-                            <>
-                                <p>Title:</p>
-
-                                <input
-                                    className="bg-input"
-                                    type="text"
-                                    id="title-post"
-                                    placeholder="Post title"
-                                    {...register('title', {
-                                        required: {
-                                            value: true,
-                                            message: 'Title required*'
-                                        },
-                                        maxLength: {
-                                            value: 60,
-                                            message: 'Max. 60 chars.*'
-                                        }
-                                    })}
-                                />
-
-                                {errors.title && (
-                                    <span className="error-input">{errors.title.message}</span>
-                                )}
-
-                                <div className="relative">
-                                    <p>Description:</p>
-
-                                    <textarea
-                                        {...register("description", {
-                                            required: {
-                                                value: true,
-                                                message: 'Description required*'
-                                            },
-                                            maxLength: {
-                                                value: 300,
-                                                message: 'Max. 300 chars.*'
-                                            }
-                                        })}
-                                        className="w-full bg-input"
-                                        id="description-post"
-                                        placeholder="Post description"
-                                    />
-
-                                    {errors.description && (
-                                        <span className="error-input">{errors.description.message}</span>
-                                    )}
-                                </div>
-                            </>
+                            <PostFields register={register} errors={errors} />
                         )}
 
                         <div className="dropzone-main-container relative">

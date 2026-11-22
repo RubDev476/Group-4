@@ -8,7 +8,7 @@ import { GlobalContext } from "@/src/app/providers";
 import AsideLeft from "./AsideLeft";
 import ImgHero from "./ImgHero";
 import TopicBar from "./TopicBar";
-import FormSesion from "../forms/FormSesion";
+import FormSession from "../forms/FormSession";
 import { Spinner } from "../ui";
  
 export default function GridLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -18,7 +18,7 @@ export default function GridLayout({ children }: Readonly<{ children: React.Reac
 
     return ( 
         <div className="grid-layout">
-            <FormSesion />
+            <FormSession />
 
             <div className={`bg-modal nav-modal w-full flex ${navModal ? 'active' : ''}`} onClick={() => setNavModal(false)}></div>
 

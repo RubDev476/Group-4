@@ -8,13 +8,14 @@ import { AddRounded, AppsRounded, ArrowForwardRounded } from "@mui/icons-materia
 
 import { GlobalContext } from "@/src/app/providers";
 import { USERS } from "@/src/fakeData";
+import { topicIcons } from "@/src/utilities/asideLeftItems";
 import type { UserDbType } from "@/src/types";
 import { AvatarImg, SkeletonUser } from "../ui";
 
 export default function ImgHero() {
-    const { user, setFormModal, setNavModal, popularUsers, loadingPopular } = useContext(GlobalContext);
+    const { user, setFormModal, setNavModal, popularUsers, loadingPopular, allUsers } = useContext(GlobalContext);
     const [creatorTab, setCreatorTab] = useState<'popular' | 'recent'>('popular');
-    const [recentActivity] = useState<UserDbType[]>(USERS);
+    const recentActivity = allUsers ?? USERS;
     const router = useRouter();
 
     const handleStartPost = () => {
@@ -130,7 +131,7 @@ export default function ImgHero() {
                 </div>
 
                 <div className="side-card-stats">
-                    <span>28 Topics</span>
+                    <span>{`${topicIcons.length} Topics`}</span>
                     <span>·</span>
                     <span>Chronological</span>
                     <span>·</span>

@@ -21,7 +21,7 @@ export type FormsSessionProps = {
     blur: (e: React.FocusEvent<HTMLInputElement>) => void;
     activeFields?: Record<string, boolean>;
     setFormRegister: Dispatch<SetStateAction<boolean>>;
-    setSucces: Dispatch<SetStateAction<boolean>>;
+    setSuccess: Dispatch<SetStateAction<boolean>>;
     errorSubmit: string;
     setErrorSubmit: Dispatch<SetStateAction<string>>;
     setFormModal?: Dispatch<SetStateAction<boolean>>;

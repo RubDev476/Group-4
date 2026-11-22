@@ -4,13 +4,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { RegisterType } from "@/src/types";
 import type { FormsSessionProps } from "@/src/types/components-props";
 
-export default function FormRegister({ select, setFormRegister, blur, activeFields, setSucces, errorSubmit }: FormsSessionProps) {
+export default function FormRegister({ select, setFormRegister, blur, activeFields, setSuccess, errorSubmit }: FormsSessionProps) {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterType>();
 
     const onSubmit: SubmitHandler<RegisterType> = (data) => {
         if (data.password !== data.confirmPassword) return;
 
-        setSucces(true);
+        setSuccess(true);
     };
 
     return (

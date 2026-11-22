@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState, useContext } from "react";
+import { ReactNode, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,11 +13,9 @@ import { USERS } from "@/src/fakeData";
 import type { UserDbType } from "@/src/types";
 
 export default function AsideLeft() {
-    const [recentActivity] = useState<UserDbType[]>(USERS);
-
     const path = usePathname();
-    
-    const { navModal, setNavModal, popularUsers } = useContext(GlobalContext);
+    const { navModal, setNavModal, popularUsers, allUsers } = useContext(GlobalContext);
+    const recentActivity = allUsers ?? USERS;
 
     return (
         <aside className={`topics-drawer ${navModal ? 'open' : ''} bg-color scroll-bar-style`} aria-hidden={!navModal}>

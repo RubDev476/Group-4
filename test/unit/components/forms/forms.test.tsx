@@ -8,7 +8,7 @@ import {
     FormComment,
     FormLogin,
     FormRegister,
-    FormSesion,
+    FormSession,
     UserForm,
 } from '@/src/components/forms';
 import { POSTS } from '@/src/fakeData';
@@ -21,7 +21,7 @@ describe('Form Components', () => {
             select: vi.fn(),
             blur: vi.fn(),
             setFormRegister: vi.fn(),
-            setSucces: vi.fn(),
+            setSuccess: vi.fn(),
             errorSubmit: '',
             setErrorSubmit: vi.fn(),
             setFormModal: vi.fn(),
@@ -58,7 +58,7 @@ describe('Form Components', () => {
             select: vi.fn(),
             blur: vi.fn(),
             setFormRegister: vi.fn(),
-            setSucces: vi.fn(),
+            setSuccess: vi.fn(),
             errorSubmit: '',
             setErrorSubmit: vi.fn(),
         });
@@ -76,10 +76,10 @@ describe('Form Components', () => {
             expect(screen.getByText('Password does not match*')).toBeInTheDocument();
 
             await user.click(screen.getByRole('button', { name: 'Register' }));
-            expect(props.setSucces).not.toHaveBeenCalled();
+            expect(props.setSuccess).not.toHaveBeenCalled();
         });
 
-        it('calls setSucces(true) when valid registration data is submitted', async () => {
+        it('calls setSuccess(true) when valid registration data is submitted', async () => {
             const user = userEvent.setup();
             const props = baseProps();
             render(<FormRegister {...props} />);
@@ -90,14 +90,14 @@ describe('Form Components', () => {
             await user.type(screen.getByLabelText(/Confirm password/i), '123456');
             await user.click(screen.getByRole('button', { name: 'Register' }));
 
-            expect(props.setSucces).toHaveBeenCalledWith(true);
+            expect(props.setSuccess).toHaveBeenCalledWith(true);
         });
     });
 
-    describe('FormSesion', () => {
+    describe('FormSession', () => {
         it('toggles between login and register views and closes modal on close button click', async () => {
             const user = userEvent.setup();
-            const { contextValue } = renderWithContext(<FormSesion />, { formModal: true });
+            const { contextValue } = renderWithContext(<FormSession />, { formModal: true });
 
             expect(screen.getByText('Welcome back')).toBeInTheDocument();
 
