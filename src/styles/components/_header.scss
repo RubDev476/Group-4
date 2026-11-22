@@ -100,6 +100,8 @@ header {
         align-items: center;
         justify-content: center;
         color: var(--mf-text-secondary);
+        background-color: transparent;
+        border: none;
         transition: background-color 0.18s ease, color 0.18s ease;
 
         &:hover {

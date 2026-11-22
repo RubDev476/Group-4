@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -18,6 +18,7 @@ import { GlobalContext } from "@/src/app/providers";
 import type { PostProps } from '@/src/types/components-props';
 
 export default function PostOptions({idPost}: PostProps) {
+    const menuId = useId();
     const [mounted, setMounted] = useState(false);
     const { theme } = useTheme();
 
@@ -57,7 +58,8 @@ export default function PostOptions({idPost}: PostProps) {
                         onClick={handleClick}
                         size="small"
                         sx={{ ml: 2 }}
-                        aria-controls={open ? 'account-menu' : undefined}
+                        aria-label="Post options"
+                        aria-controls={open ? menuId : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
@@ -74,7 +76,7 @@ export default function PostOptions({idPost}: PostProps) {
 
                     <Menu
                         anchorEl={anchorEl}
-                        id="account-menu"
+                        id={menuId}
                         open={open}
                         onClose={() => setAnchorEl(null)}
                         onClick={() => setAnchorEl(null)}

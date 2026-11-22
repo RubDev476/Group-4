@@ -102,7 +102,7 @@ export default function FormRegister({ select, setFormRegister, blur, activeFiel
                     {(watch('password') !== undefined && watch('confirmPassword') !== undefined) && (watch('confirmPassword') !== watch('password') && <span className="error-input">Password does not match*</span>)}
                 </div>
 
-                <p>Already a member of myfeed? <span className="pointer" onClick={() => setFormRegister(false)}>Sign in</span></p>
+                <p>Already a member of myfeed? <button type="button" className="form-switch-btn pointer" onClick={() => setFormRegister(false)}>Sign in</button></p>
 
                 <div className="action-container relative text-center">
                     {errorSubmit !== '' && <span className="error-submit absolute w-full">{errorSubmit}</span>}

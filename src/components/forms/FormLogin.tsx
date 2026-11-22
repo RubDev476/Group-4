@@ -55,7 +55,7 @@ export default function FormLogin({ select, setFormRegister, blur, activeFields,
                     {errors.password && <span className="error-input">Password required*</span>}
                 </div>
 
-                <p>First time on myfeed? <span className="pointer" onClick={() => setFormRegister(true)}>Create an account</span></p>
+                <p>First time on myfeed? <button type="button" className="form-switch-btn pointer" onClick={() => setFormRegister(true)}>Create an account</button></p>
 
                 <div className="action-container relative text-center">
                     {errorSubmit !== '' && <span className="error-submit absolute w-full">{errorSubmit}</span>}

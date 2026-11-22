@@ -53,21 +53,12 @@ export default function Dropzone({ getImg, img, setErrorImg, errorImg }: DZProps
 
             {img ? (
                 <div className="preview-img-container w-full all-center relative">
-                    {typeof img === 'string' ? (
-                        <Image
-                            src={img}
-                            fill
-                            alt="img-preview"
-                            priority
-                        />
-                    ) : (
-                        <Image
-                            src={previewImg}
-                            fill
-                            alt="img-preview"
-                            priority
-                        />
-                    )}
+                    <Image
+                        src={typeof img === 'string' ? img : previewImg}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 580px"
+                        alt="img-preview"
+                    />
                 </div>
             ) : (
                 <div {...getRootProps({ className: 'dropzone w-full bg-input all-center' })}>

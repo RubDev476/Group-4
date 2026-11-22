@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AvatarImg from "./AvatarImg";
@@ -36,6 +36,7 @@ const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 export default function UserOptions({ theme, user }: UserOptionsProps) {
+    const menuId = useId();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -54,7 +55,8 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
                     onClick={handleClick}
                     size="small"
                     sx={{ ml: 2 }}
-                    aria-controls={open ? 'account-menu' : undefined}
+                    aria-label="Profile options"
+                    aria-controls={open ? menuId : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                 >
@@ -68,7 +70,7 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
 
             <Menu
                 anchorEl={anchorEl}
-                id="account-menu"
+                id={menuId}
                 open={open}
                 onClose={() => setAnchorEl(null)}
                 onClick={() => setAnchorEl(null)}

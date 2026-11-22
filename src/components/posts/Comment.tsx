@@ -144,7 +144,13 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                 <div className="actions-container w-full flex align-center justify-start">
                     {!edit && (
                         <>
-                            <div className="relative like all-center pointer bg-hover" onClick={likeToggle}>
+                            <button
+                                type="button"
+                                className="comment-action-btn relative like all-center pointer bg-hover"
+                                onClick={likeToggle}
+                                aria-label={(user && commentDoc.likes.includes(user.uid)) ? 'Unlike comment' : 'Like comment'}
+                                aria-pressed={Boolean(user && commentDoc.likes.includes(user.uid))}
+                            >
                                 {(user && commentDoc.likes.includes(user.uid)) ? (
                                     <Favorite className='icon like-color' />
                                 ) : (
@@ -152,13 +158,18 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                                 )}
 
                                 <span>{commentDoc.likes.length.toString()}</span>
-                            </div>
+                            </button>
 
-                            <div className="relative all-center pointer bg-hover" onClick={replyBtn}>
+                            <button
+                                type="button"
+                                className="comment-action-btn relative all-center pointer bg-hover"
+                                onClick={replyBtn}
+                                aria-label="Reply to comment"
+                            >
                                 <ChatBubbleOutline className='icon' />
 
                                 <span>Reply</span>
-                            </div>
+                            </button>
                         </>
                     )}
 

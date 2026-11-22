@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 import themeColors from "@/src/utilities/themeColors";
@@ -15,6 +15,7 @@ import { MoreHoriz, Delete, Edit } from '@mui/icons-material';
 import type { CommentOptionsProps } from '@/src/types/components-props';
 
 export default function CommentOptions({deleteF, setEdit}: CommentOptionsProps) {
+    const menuId = useId();
     const [mounted, setMounted] = useState(false);
     const { theme } = useTheme();
 
@@ -35,7 +36,8 @@ export default function CommentOptions({deleteF, setEdit}: CommentOptionsProps) 
                         onClick={handleClick}
                         size="small"
                         sx={{ ml: 2, padding: 0 }}
-                        aria-controls={open ? 'account-menu' : undefined}
+                        aria-label="Comment options"
+                        aria-controls={open ? menuId : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
@@ -53,7 +55,7 @@ export default function CommentOptions({deleteF, setEdit}: CommentOptionsProps) 
 
                     <Menu
                         anchorEl={anchorEl}
-                        id="account-menu"
+                        id={menuId}
                         open={open}
                         onClose={() => setAnchorEl(null)}
                         onClick={() => setAnchorEl(null)}

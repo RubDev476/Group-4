@@ -155,7 +155,13 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
 
                     <div className="actions-container w-full flex align-center justify-start">
                         {!edit && (
-                            <div className="relative like all-center pointer bg-hover" onClick={likeToggle}>
+                            <button
+                                type="button"
+                                className="comment-action-btn relative like all-center pointer bg-hover"
+                                onClick={likeToggle}
+                                aria-label={(user && reply.likes.includes(user.uid)) ? 'Unlike reply' : 'Like reply'}
+                                aria-pressed={Boolean(user && reply.likes.includes(user.uid))}
+                            >
                                 {(user && reply.likes.includes(user.uid)) ? (
                                     <Favorite className='icon like-color' />
                                 ) : (
@@ -163,7 +169,7 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                                 )}
 
                                 <span>{reply.likes.length.toString()}</span>
-                            </div>
+                            </button>
                         )}
 
                         {edit && (

@@ -12,10 +12,10 @@ export async function generateMetadata(
 
     const post = POSTS.find(item => item.posts.id === id)?.posts;
 
-    if (!post) return { title: 'Post Not Found | myfeed' };
+    if (!post) return { title: 'Post Not Found' };
 
     return {
-        title: `${post.title} | myfeed`,
+        title: post.title,
         description: post.description || 'Read this post and join the discussion on myfeed.',
     };
 }

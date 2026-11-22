@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, createContext } from 'react';
+import { useState, useEffect, useMemo, createContext } from 'react';
 
 import { AllPostsType, GlobalContextType, UserDbType } from '../types';
 import { POSTS, USERS } from '../fakeData';
@@ -64,27 +64,33 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         document.body.classList.toggle('no-scrollY', navModal || formModal);
+        return () => {
+            document.body.classList.remove('no-scrollY');
+        };
     }, [navModal, formModal]);
+
+    const contextValue = useMemo<GlobalContextType>(
+        () => ({
+            navModal,
+            formModal,
+            setNavModal,
+            setFormModal,
+            allPosts,
+            setAllPosts,
+            allUsers,
+            loadingData,
+            popularUsers,
+            loadingPopular,
+            setRefresh,
+            user,
+            fetchError,
+        }),
+        [navModal, formModal, allPosts, allUsers, loadingData, popularUsers, loadingPopular, user, fetchError]
+    );
 
     return (
         <ThemeProvider defaultTheme="dark" enableSystem={false}>
-            <GlobalContext.Provider
-                value={{
-                    navModal,
-                    formModal,
-                    setNavModal,
-                    setFormModal,
-                    allPosts,
-                    setAllPosts,
-                    allUsers,
-                    loadingData,
-                    popularUsers,
-                    loadingPopular,
-                    setRefresh,
-                    user,
-                    fetchError
-                }}
-            >
+            <GlobalContext.Provider value={contextValue}>
                 {children}
             </GlobalContext.Provider>
         </ThemeProvider>

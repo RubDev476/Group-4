@@ -128,9 +128,14 @@
             font-size: 14px;
             color: var(--mf-text-secondary);
 
-            span {
+            span,
+            .form-switch-btn {
                 color: var(--mf-primary);
                 font-weight: 600;
+                background: transparent;
+                border: none;
+                padding: 0;
+                font-size: inherit;
 
                 &:hover {
                     text-decoration: underline;

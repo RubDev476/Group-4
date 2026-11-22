@@ -9,10 +9,10 @@ export async function generateMetadata({ params }: TopicParams): Promise<Metadat
     const { slug } = await params;
     const topic = findTopicBySlug(decodeURIComponent(slug));
 
-    if (!topic) return { title: 'Topic Not Found | myfeed' };
+    if (!topic) return { title: 'Topic Not Found' };
 
     return {
-        title: `${topic.title} | myfeed`,
+        title: topic.title,
         description: `Explore posts and discussions in ${topic.title} on myfeed.`,
     };
 }

@@ -33,6 +33,7 @@ export default function ImgHero() {
                     alt="myfeed community banner"
                     priority
                     fill
+                    sizes="(max-width: 900px) 100vw, 66vw"
                     className="hero-bg-img w-full h-full"
                 />
 

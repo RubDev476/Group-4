@@ -13,10 +13,10 @@ export async function generateMetadata(
 
     const user = USERS.find(u => u.displayName === decodedId);
 
-    if (!user) return { title: 'User Not Found | myfeed' };
+    if (!user) return { title: 'User Not Found' };
 
     return {
-        title: `@${user.displayName} | myfeed`,
+        title: `@${user.displayName}`,
         description: `Explore posts by @${user.displayName} on myfeed.`,
     };
 }

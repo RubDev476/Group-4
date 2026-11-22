@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -19,10 +19,26 @@ import type { CommentTypes } from '@/src/types';
 import type { PostComponentProps } from '@/src/types/components-props';
 
 export default function Post({ postData, creator }: PostComponentProps) {
+    const [copied, setCopied] = useState(false);
     const path = usePathname();
     const router = useRouter();
 
     const {setFormModal, user, setAllPosts, allPosts} = useContext(GlobalContext);
+
+    useEffect(() => {
+        if (!copied) return;
+        const timer = setTimeout(() => setCopied(false), 2000);
+        return () => clearTimeout(timer);
+    }, [copied]);
+
+    const handleShare = () => {
+        if (typeof window === 'undefined') return;
+        const shareUrl = `${window.location.origin}/p/${postData.id}`;
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(shareUrl).catch(() => {});
+        }
+        setCopied(true);
+    };
 
     const totalComments = (): number => postData.comments.reduce((total: number, comment: CommentTypes) => total + (comment.replies.length || 0), postData.comments.length);
 
@@ -70,8 +86,8 @@ export default function Post({ postData, creator }: PostComponentProps) {
                         src={postData.imgUrl}
                         alt={postData.title}
                         fill
+                        sizes="(max-width: 520px) 100vw, 225px"
                         className="post-cover-img"
-                        priority
                     />
                 </div>
             )}
@@ -107,18 +123,17 @@ export default function Post({ postData, creator }: PostComponentProps) {
 
                 {isDetailView && postData.imgUrl && (
                     <div className="img-container relative w-full all-center">
-                        <Image
-                            src={postData.imgUrl}
-                            alt={postData.title}
-                            fill
-                            className='bg-img absolute'
-                            priority
+                        <div
+                            className='bg-img absolute w-full h-full'
+                            style={{ backgroundImage: `url(${postData.imgUrl})` }}
+                            aria-hidden="true"
                         />
 
                         <Image
                             src={postData.imgUrl}
                             alt={postData.title}
                             fill
+                            sizes="(max-width: 820px) 100vw, 760px"
                             className='img-post h-full absolute'
                             priority
                         />
@@ -127,7 +142,13 @@ export default function Post({ postData, creator }: PostComponentProps) {
 
                 <div className="actions-container w-full flex align-center justify-between">
                     <div className="actions-left flex align-center">
-                        <div className={`action-pill relative like all-center pointer ${isLiked ? 'liked' : ''}`} onClick={likeToggle}>
+                        <button
+                            type="button"
+                            className={`action-pill relative like all-center pointer ${isLiked ? 'liked' : ''}`}
+                            onClick={likeToggle}
+                            aria-label={isLiked ? 'Unlike post' : 'Like post'}
+                            aria-pressed={isLiked}
+                        >
                             {isLiked ? (
                                 <Favorite className='icon like-color' />
                             ) : (
@@ -135,19 +156,29 @@ export default function Post({ postData, creator }: PostComponentProps) {
                             )}
 
                             <span>{postData.likes.length.toString()}</span>
-                        </div>
+                        </button>
 
-                        <div className="action-pill relative comment all-center pointer" onClick={redirectPost}>
+                        <button
+                            type="button"
+                            className="action-pill relative comment all-center pointer"
+                            onClick={redirectPost}
+                            aria-label="View comments"
+                        >
                             <ChatBubbleOutline className='icon' />
 
                             <span>{totalComments().toString()}</span>
-                        </div>
+                        </button>
                     </div>
 
-                    <div className="action-pill relative share all-center pointer">
+                    <button
+                        type="button"
+                        className="action-pill relative share all-center pointer"
+                        onClick={handleShare}
+                        aria-label="Share post link"
+                    >
                         <IosShare className='icon' />
-                        {isDetailView && <span>Share</span>}
-                    </div>
+                        {(isDetailView || copied) && <span>{copied ? 'Copied!' : 'Share'}</span>}
+                    </button>
                 </div>
             </div>
         </article>

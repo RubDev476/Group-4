@@ -5,7 +5,10 @@ import { Header, GridLayout } from "../components/layouts";
 import '../styles/index.scss';
 
 export const metadata: Metadata = {
-    title: "myfeed — Your interests, zero noise",
+    title: {
+        default: "myfeed — Your interests, zero noise",
+        template: "%s | myfeed",
+    },
     description: "Explore, share, and discuss in the communities you choose — without algorithmic noise.",
     icons: [
         {rel: 'icon', url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png'},

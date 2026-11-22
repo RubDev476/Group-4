@@ -140,7 +140,7 @@ describe('Post and Comment Components', () => {
                 { user: mockUser } // uid '1' === commentDoc.idUser
             );
 
-            await user.click(screen.getByRole('button'));
+            await user.click(screen.getByRole('button', { name: 'Comment options' }));
             await user.click(screen.getByText('Edit comment'));
 
             const textarea = screen.getByDisplayValue(commentDoc.comment);
@@ -150,7 +150,7 @@ describe('Post and Comment Components', () => {
 
             expect(contextValue.setAllPosts).toHaveBeenCalledTimes(1);
 
-            await user.click(screen.getByRole('button'));
+            await user.click(screen.getByRole('button', { name: 'Comment options' }));
             await user.click(screen.getByText('Delete comment'));
             expect(contextValue.setAllPosts).toHaveBeenCalledTimes(2);
         });

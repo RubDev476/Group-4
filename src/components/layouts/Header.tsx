@@ -131,14 +131,16 @@ export default function Header() {
 
                     {mounted ? (
                         (!searchActive && (
-                            <div
+                            <button
+                                type="button"
                                 className="theme-container pointer"
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                                 title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                             >
                                 {(theme === 'light' || theme === 'system') && <DarkMode />}
                                 {(theme === 'dark') && <LightMode />}
-                            </div>
+                            </button>
                         ))
                     ) : (
                         <SkeletonComponent 
@@ -157,7 +159,7 @@ export default function Header() {
                     )}
 
                     {((!user && !loadingData) && !searchActive) && (
-                        <button className="btn-signin pointer" onClick={() => setFormModal(true)}>Sign in</button>
+                        <button type="button" className="btn-signin pointer" onClick={() => setFormModal(true)}>Sign in</button>
                     )}
 
                     {(((user && !loadingData) && theme !== undefined) && !searchActive) && (

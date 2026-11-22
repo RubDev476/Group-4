@@ -24,7 +24,7 @@ describe('UI Components', () => {
         it('renders an image when photoURL is a path or URL', () => {
             render(<AvatarImg size={32} fontSize={16} user={mockImageUser} />);
 
-            const img = screen.getByAltText('img-user') as HTMLImageElement;
+            const img = screen.getByAltText(`${mockImageUser.displayName} avatar`) as HTMLImageElement;
             expect(img).toBeInTheDocument();
             expect(img).toHaveAttribute('src', mockImageUser.photoURL);
         });

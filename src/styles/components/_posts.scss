@@ -133,7 +133,8 @@ article {
             border: 1px solid var(--mf-border);
 
             .bg-img {
-                object-fit: cover;
+                background-size: cover;
+                background-position: center;
                 filter: blur(22px);
                 transform: scale(1.25);
                 opacity: 0.34;
@@ -171,6 +172,7 @@ article {
 
         .action-pill {
             border-radius: var(--mf-radius-pill);
+            border: none;
             padding: 6px 12px;
             gap: 6px;
             font-size: 13px;
