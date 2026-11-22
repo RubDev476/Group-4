@@ -128,10 +128,12 @@ describe('Form Components', () => {
                 { user: mockUser }
             );
 
-            await user.type(screen.getByPlaceholderText('Write comment'), 'Great post!');
+            const textarea = screen.getByPlaceholderText('Write comment');
+            await user.type(textarea, 'Great post!');
             await user.click(screen.getByRole('button', { name: 'Comment' }));
 
             expect(contextValue.setAllPosts).toHaveBeenCalledTimes(1);
+            expect(textarea).toHaveValue('');
             const updatedPosts = vi.mocked(contextValue.setAllPosts).mock.calls[0][0] as typeof POSTS;
             const updatedTarget = updatedPosts.find((p) => p.posts.id === samplePost.id);
             expect(updatedTarget?.posts.comments[0].comment).toBe('Great post!');

@@ -41,25 +41,28 @@ export default function Header() {
     const { navModal, setNavModal, setFormModal, user, loadingData } = useContext(GlobalContext);
 
     useEffect(() => {
-        window.addEventListener('resize', () => {
-            if (innerWidth >= 1024) {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
                 setSearchActive(false);
             }
-        })
+        };
 
+        window.addEventListener('resize', handleResize);
         setMounted(true);
-    }, [])
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const toggleMenu = () => setNavModal(!navModal);
 
     const toggleSearch = () => {
         setSearchActive(!searchActive);
         setNavModal(false);
-    }
+    };
 
-    const select = () => document.querySelector('HEADER FORM')?.classList.add('shadow');
-
-    const blur = () => document.querySelector('HEADER FORM')?.classList.remove('shadow');
+    const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
 
     return (
         <header className='flex align-center border-bottom bg-color w-full'>
@@ -102,8 +105,7 @@ export default function Header() {
                 )}
 
                 <form
-                    onBlur={blur}
-                    onSelect={select}
+                    onSubmit={handleSearchSubmit}
                     className={`bg-input align-center justify-center relative ${searchActive ? 'flex' : ''}`}
                 >
                     <label htmlFor="search" className="all-center absolute">

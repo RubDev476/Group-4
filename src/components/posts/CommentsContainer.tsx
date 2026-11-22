@@ -24,8 +24,8 @@ export default function CommentsContainer({ commentDoc, setCommentId, currentPos
     }, [allUsers, commentDoc])
 
     const memoizedReplies = useMemo(() => {
-        return commentDoc.replies.length > 0 && commentDoc.replies.map((res: ReplyTypes) => <Reply key={res.id} reply={res} currentPost={currentPost} commentId={commentDoc.id} />)
-    }, [currentPost]);
+        return commentDoc.replies.length > 0 && commentDoc.replies.map((res: ReplyTypes) => <Reply key={res.id} reply={res} currentPost={currentPost} commentId={commentDoc.id} />);
+    }, [commentDoc.id, commentDoc.replies, currentPost]);
 
     if (userPost) return (
         <div className="comment-main-container w-full">
@@ -37,7 +37,7 @@ export default function CommentsContainer({ commentDoc, setCommentId, currentPos
             />
 
             {commentId === commentDoc.id && (
-                <div className={`form-container-2 w-full ${commentDoc.replies.length > 0 && 'reply-true'}`}>
+                <div className={`form-container-2 w-full ${commentDoc.replies.length > 0 ? 'reply-true' : ''}`}>
                     <FormComment
                         post={currentPost}
                         commentId={commentId}

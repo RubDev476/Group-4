@@ -4,14 +4,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginType } from "@/src/types";
 import type { FormsSessionProps } from "@/src/types/components-props";
 
-export default function FormLogin({ select, setFormRegister, blur, setErrorSubmit, errorSubmit, setFormModal }: FormsSessionProps) {
+export default function FormLogin({ select, setFormRegister, blur, activeFields, errorSubmit, setFormModal }: FormsSessionProps) {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginType>();
 
-    const onSubmit: SubmitHandler<LoginType> = async () => {
+    const onSubmit: SubmitHandler<LoginType> = () => {
         if (setFormModal) setFormModal(false);
-    }
+    };
 
-    return ( 
+    return (
         <>
             <div className="modal-brand logo-font">
                 <span>my<span className="logo-accent">feed</span></span>
@@ -20,43 +20,40 @@ export default function FormLogin({ select, setFormRegister, blur, setErrorSubmi
             <p className="modal-subtitle">Sign in to continue to your feed.</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/*This tag helps me correct the error when changing forms, where the input values ​​were mixed, that's why the other registration form does not have this 'fieldset' tag...*/}
-                <fieldset>
-                    <div className="bg-input relative">
-                        <label htmlFor="email-s" className="email-s absolute">Email <span>*</span></label>
-                        <input 
-                            type="email" 
-                            className="relative w-full"
-                            {...register("email", {
-                                required: true,
-                                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-                            })} 
-                            onBlur={blur}
-                            onSelect={select} 
-                            id="email-s"
-                            autoComplete="off" 
-                        />
+                <div className="bg-input relative">
+                    <label htmlFor="email-s" className={`email-s absolute ${activeFields?.['email-s'] ? 'active' : ''}`}>Email <span>*</span></label>
+                    <input
+                        type="email"
+                        className="relative w-full"
+                        {...register("email", {
+                            required: true,
+                            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            onBlur: blur,
+                        })}
+                        onFocus={select}
+                        id="email-s"
+                        autoComplete="email"
+                    />
 
-                        {errors.email && <span className="error-input">Email required*</span>}
-                    </div>
+                    {errors.email && <span className="error-input">Email required*</span>}
+                </div>
 
-                    <div className="bg-input relative">
-                        <label htmlFor="password-s" className="password-s absolute">Password <span>*</span></label>
-                        <input 
-                            type="password" 
-                            className="relative w-full"
-                            {...register('password', {
-                                required: true
-                            })} 
-                            onBlur={blur}
-                            onSelect={select} 
-                            id="password-s"
-                            autoComplete="off"  
-                        />
+                <div className="bg-input relative">
+                    <label htmlFor="password-s" className={`password-s absolute ${activeFields?.['password-s'] ? 'active' : ''}`}>Password <span>*</span></label>
+                    <input
+                        type="password"
+                        className="relative w-full"
+                        {...register('password', {
+                            required: true,
+                            onBlur: blur,
+                        })}
+                        onFocus={select}
+                        id="password-s"
+                        autoComplete="current-password"
+                    />
 
-                        {errors.password && <span className="error-input">Password required*</span>}
-                    </div>
-                </fieldset>
+                    {errors.password && <span className="error-input">Password required*</span>}
+                </div>
 
                 <p>First time on myfeed? <span className="pointer" onClick={() => setFormRegister(true)}>Create an account</span></p>
 
@@ -67,5 +64,5 @@ export default function FormLogin({ select, setFormRegister, blur, setErrorSubmi
                 </div>
             </form>
         </>
-    )
+    );
 }

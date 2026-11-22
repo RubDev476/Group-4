@@ -1,30 +1,32 @@
 'use client';
 
 import Image from "next/image";
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 import { Collections } from "@mui/icons-material";
 
 import type { DZProps } from "@/src/types/components-props";
 
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
 export default function Dropzone({ getImg, img, setErrorImg, errorImg }: DZProps) {
     const [previewImg, setPreviewImg] = useState<string>('');
 
+    useEffect(() => {
+        return () => {
+            if (previewImg && typeof URL.revokeObjectURL === 'function') {
+                URL.revokeObjectURL(previewImg);
+            }
+        };
+    }, [previewImg]);
+
     const onDropRejected = () => setErrorImg("Error (Max. 10Mb, 'jpeg/png')*");
 
-    const onDropAccepted = useCallback(async (acceptedFiles: Array<File>) => {
-        const formData = new FormData();
-
-        formData.append('imgPost', acceptedFiles[0]);
-
-        //console.log(acceptedFiles[0])
-
+    const onDropAccepted = useCallback((acceptedFiles: Array<File>) => {
         if (acceptedFiles.length > 0) {
-            //changeDrop(acceptedFiles[0])
             getImg(acceptedFiles[0]);
 
-            //important code to show a preview image to the user, just get the input file and then pass it to this url and then place it in the image tag and that's it!!!!!
             const url = URL.createObjectURL(acceptedFiles[0]);
 
             setPreviewImg(url);
@@ -32,16 +34,16 @@ export default function Dropzone({ getImg, img, setErrorImg, errorImg }: DZProps
         }
     }, [getImg, setErrorImg]);
 
-    const maxSize = true ? 1000000000000 : 1000000;
-
-    //extract Dropzone content
     const {
-        fileRejections,
         getRootProps,
         getInputProps,
         isDragActive,
-        acceptedFiles
-    } = useDropzone({ onDropAccepted, onDropRejected, accept: { 'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'] }, maxSize });
+    } = useDropzone({
+        onDropAccepted,
+        onDropRejected,
+        accept: { 'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'] },
+        maxSize: MAX_IMAGE_SIZE_BYTES,
+    });
 
     return (
         <div className="dropzone-container w-full bg-input">

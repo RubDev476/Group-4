@@ -14,67 +14,65 @@ export default function FormComment({ post, isReplyForm, resetFormComment, comme
 
     const {user, setAllPosts, allPosts} = useContext(GlobalContext);
 
-    const submitComment = async (e: React.FormEvent) => {
+    const submitComment = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (comment === '' || !user) return;
+        const trimmedComment = comment.trim();
+        if (trimmedComment === '' || !user) return;
 
         try {
-            const newComment: CommentTypes | ReplyTypes = {
+            const baseReply: ReplyTypes = {
                 id: generateId(),
                 idUser: user.uid,
                 date: Date.now(),
                 likes: [],
-                comment: comment,
+                comment: trimmedComment,
             };
 
-            const { updatePosts } = update_state(newComment);
+            const { updatePosts } = update_state(baseReply);
 
             setAllPosts(updatePosts);
             setComment('');
-        } catch (error) {
-            console.log(error);
+        } catch {
+            // Ignore when target comment no longer exists
         }
-    }
+    };
 
-    const update_post = (newComment: CommentTypes | ReplyTypes, currentComments: CommentTypes[]) => {
-        if(!isReplyForm) {
-            newComment = {...newComment, replies: []};
-
-            currentComments = [newComment, ...currentComments];
-
-            return currentComments;
+    const update_post = (newEntry: ReplyTypes, currentComments: CommentTypes[]) => {
+        if (!isReplyForm) {
+            const newComment: CommentTypes = { ...newEntry, replies: [] };
+            return [newComment, ...currentComments];
         }
 
-        if(!commentId) return currentComments;
+        if (!commentId) return currentComments;
 
-        const currentIndexComment = currentComments.findIndex(comment => comment.id === commentId);
+        const currentIndexComment = currentComments.findIndex(item => item.id === commentId);
 
-        if(isReplyForm && currentIndexComment !== -1) {
-            currentComments[currentIndexComment].replies = [newComment, ...currentComments[currentIndexComment].replies]; 
-        } else if(isReplyForm && currentIndexComment === -1) {
-            throw new Error('no comment...')
+        if (currentIndexComment !== -1) {
+            currentComments[currentIndexComment].replies = [newEntry, ...currentComments[currentIndexComment].replies];
+        } else {
+            throw new Error('no comment...');
         }
 
         return currentComments;
-    }
+    };
 
-    const update_state = (newComment: CommentTypes | ReplyTypes) => {
-        let currentComments_state: CommentTypes[] = JSON.parse(JSON.stringify(post.comments));
+    const update_state = (newEntry: ReplyTypes) => {
+        const currentComments_state: CommentTypes[] = JSON.parse(JSON.stringify(post.comments));
 
-        const newComments = update_post(newComment, currentComments_state);
+        const newComments = update_post(newEntry, currentComments_state);
 
-        const updatePosts = allPosts.map(data => data.posts.id === post.id ? { ...data, posts: { ...data.posts, comments: newComments} } : data );
+        const updatePosts = allPosts.map(data => data.posts.id === post.id ? { ...data, posts: { ...data.posts, comments: newComments } } : data);
 
         return {
             updatePosts
-        }
-    }
+        };
+    };
 
     const cancel = () => {
         resetFormComment();
         setComment('');
-    }
+    };
 
     return (
         <form
@@ -82,15 +80,16 @@ export default function FormComment({ post, isReplyForm, resetFormComment, comme
             className={`${isReplyForm ? 'relative' : 'w-full'} bg-input`}
         >
             <textarea
+                value={comment}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value)}
                 name={`${isReplyForm ? 'form-replies' : 'form-comments'}`}
                 id={`${isReplyForm ? 'form-replies' : 'form-comments'}`}
                 className="w-full scroll-bar-style"
                 placeholder={`Write ${isReplyForm ? 'reply' : 'comment'}`}
             />
- 
+
             <div className="actions-form-container w-full flex align-center">
-                <button className="cancel-btn pointer bg-hover-2" type="reset" onClick={cancel}>Cancel</button>
+                <button className="cancel-btn pointer bg-hover-2" type="button" onClick={cancel}>Cancel</button>
 
                 <button className="comment-btn pointer" type="submit">{`${isReplyForm ? 'Reply' : 'Comment'}`}</button>
             </div>

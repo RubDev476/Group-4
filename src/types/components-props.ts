@@ -19,6 +19,7 @@ export type FormCommentProps = {
 export type FormsSessionProps = {
     select: (e: React.FocusEvent<HTMLInputElement>) => void;
     blur: (e: React.FocusEvent<HTMLInputElement>) => void;
+    activeFields?: Record<string, boolean>;
     setFormRegister: Dispatch<SetStateAction<boolean>>;
     setSucces: Dispatch<SetStateAction<boolean>>;
     errorSubmit: string;
@@ -80,6 +81,10 @@ export type Params = {
     params: Promise<{ id: string }>;
 };
 
+export type TopicParams = {
+    params: Promise<{ slug: string }>;
+};
+
 export type DynamicParams = Params & {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
@@ -91,4 +96,8 @@ export type PostProps = {
 
 export type UserProps = {
     userName: string;
+};
+
+export type TopicProps = {
+    slug: string;
 };

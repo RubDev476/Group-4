@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState, useEffect, useContext } from "react";
+import { ReactNode, useState, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,9 +10,10 @@ import { TopicIcon, topicIcons } from "@/src/utilities/asideLeftItems";
 import { AvatarImg } from "../ui";
 import { GlobalContext } from "@/src/app/providers";
 import { USERS } from "@/src/fakeData";
+import type { UserDbType } from "@/src/types";
 
 export default function AsideLeft() {
-    const [recentActivity, setRecentActivity] = useState<any>(USERS);
+    const [recentActivity] = useState<UserDbType[]>(USERS);
 
     const path = usePathname();
     
@@ -61,7 +62,7 @@ export default function AsideLeft() {
                 <div className="drawer-section w-full">
                     <span className="drawer-label">Popular Creators</span>
                     <div className="drawer-creators-list">
-                        {popularUsers.map((creator: any) => (
+                        {popularUsers.map((creator: UserDbType) => (
                             <Link
                                 key={creator.uid}
                                 href={`/u/${creator.displayName}`}
@@ -80,7 +81,7 @@ export default function AsideLeft() {
                 <div className="drawer-section w-full">
                     <span className="drawer-label">Recently Visited</span>
                     <div className="drawer-creators-list">
-                        {recentActivity.map((recentUser: any) => (
+                        {recentActivity.map((recentUser: UserDbType) => (
                             <Link
                                 key={recentUser.uid}
                                 href={`/u/${recentUser.displayName}`}

@@ -10,44 +10,42 @@ import { FormComment } from "@/src/components/forms";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import type { AllPostsType, CommentTypes } from "@/src/types";
+import type { CommentTypes } from "@/src/types";
 import type { PostProps } from "../types/components-props";
 
 export default function Post({ idPost }: PostProps) {
     const [formComment, setFormComment] = useState(false);
     const [commentId, setCommentId] = useState<string>('');
-    const [currentPost, setCurrentPost] = useState<AllPostsType | null>(null);
-    const [loadingPage, setLoadingPage] = useState(true);
 
-    const { allPosts, setFormModal, user } = useContext(GlobalContext);
+    const { allPosts, loadingData, setFormModal, user } = useContext(GlobalContext);
 
-    useEffect(() => {
-        const loadingPost = allPosts.find(post => post.posts.id === idPost);
-
-        setCurrentPost(loadingPost ? loadingPost : null);
-        setLoadingPage(false);
-    }, [allPosts, idPost]);
-
-    useEffect(() => {
-        resetFormComment();
-    }, [currentPost]);
+    const currentPost = useMemo(
+        () => allPosts.find((post) => post.posts.id === idPost) ?? null,
+        [allPosts, idPost]
+    );
 
     const resetFormComment = useCallback(() => {
         setFormComment(false);
         setCommentId('');
     }, []);
 
+    useEffect(() => {
+        resetFormComment();
+    }, [currentPost, resetFormComment]);
+
     const addCommentBtn = useCallback(() => {
-        !user ? setFormModal(true) : setFormComment(true);
+        if (!user) {
+            setFormModal(true);
+            return;
+        }
+        setFormComment(true);
     }, [user, setFormModal]);
 
-    const memoizedPost = useMemo(() => {
-        if (currentPost) return <PostComponent postData={currentPost.posts} creator={currentPost.user} />
-    }, [currentPost]);
+    if (loadingData) return null;
 
-    if (!currentPost && !loadingPage) return <NotFound message="Post not found or deleted" />;
+    if (!currentPost) return <NotFound message="Post not found or deleted" />;
 
-    if (currentPost) return (
+    return (
         <div className="post-detail-shell w-full">
             <Link href="/" className="back-feed-link">
                 <ArrowBackRounded />
@@ -56,7 +54,7 @@ export default function Post({ idPost }: PostProps) {
 
             <div className="post-detail-grid">
                 <div className="post-detail-main">
-                    {memoizedPost}
+                    <PostComponent postData={currentPost.posts} creator={currentPost.user} />
                 </div>
 
                 <section className="comments-section w-full">

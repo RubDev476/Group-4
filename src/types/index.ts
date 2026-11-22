@@ -54,6 +54,7 @@ export interface CommentTypes extends ReplyTypes {
 
 export interface PostTypes extends GlobalTypesPost, MainPostProperties {
     imgUrl: string | null;
+    topic?: string;
     comments: CommentTypes[];
 }
 

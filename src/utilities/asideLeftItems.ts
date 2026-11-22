@@ -50,38 +50,42 @@ import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 export interface TopicIcon {
     title: string;
+    slug: string;
     path: string;
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {muiName: string;};
     iconPath?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {muiName: string;};
 }
 
-export const topicIcons = <TopicIcon[]>[
-    {title: 'Video games', path: '/videogames', icon: SportsEsportsOutlined, iconPath: SportsEsports},
-    {title: 'Sports', path: '/sports', icon: SportsBaseballOutlined, iconPath: SportsBaseball},
-    {title: 'Business', path: '/business', icon: Business},
-    {title: 'TV', path: '/tv', icon: Tv},
-    {title: 'Famous', path: '/famous', icon: StarOutline, iconPath: Star},
-    {title: 'Animals / Pets', path: '/animals-pets', icon: Pets},
-    {title: 'Anime / Animation', path: '/anime-animation', icon: Face3Outlined, iconPath: Face3},
-    {title: 'Art', path: '/art', icon: ColorLensOutlined, iconPath: ColorLens},
-    {title: 'Cars / Motors / Vehicles', path: '/vehicles', icon: DirectionsCarOutlined, iconPath: DirectionsCar},
-    {title: 'Crafts', path: '/crafts', icon: AutoAwesomeOutlined, iconPath: AutoAwesome},
-    {title: 'Culture / Races / Ethnicities', path: '/culture', icon: Diversity3},
-    {title: 'Ethics / Philosophy', path: '/ethics-philosophy', icon: AccountBalanceOutlined, iconPath: AccountBalance},
-    {title: 'Fashion', path: '/fashion', icon: Checkroom},
-    {title: 'Meals / Drinks', path: '/meals-drinks', icon: Restaurant},
-    {title: 'History', path: '/history', icon: AutoStoriesOutlined, iconPath: AutoStories},
-    {title: 'Hobbies', path: '/hobbies', icon: Skateboarding},
-    {title: 'Law', path: '/law', icon: Gavel},
-    {title: 'Learning / Education', path: '/education', icon: SchoolOutlined, iconPath: School},
-    {title: 'Movies', path: '/movies', icon: TheatersOutlined},
-    {title: 'Music', path: '/music', icon: LibraryMusicOutlined, iconPath: LibraryMusic},
-    {title: 'Places', path: '/places', icon: PlaceOutlined, iconPath: Place},
-    {title: 'Podcast / Streaming', path: '/podcast-streaming', icon: SettingsInputAntenna},
-    {title: 'Politics', path: '/politics', icon: HowToVoteOutlined, iconPath: HowToVote},
-    {title: 'Programming', path: '/programming', icon: Terminal},
-    {title: 'Literature', path: '/literature', icon: LocalLibraryOutlined, iconPath: LocalLibrary},
-    {title: 'Religion / Spirituality', path: '/religion-spirituality', icon: ChurchOutlined, iconPath: Church},
-    {title: 'Science', path: '/science', icon: ScienceOutlined, iconPath: Science},
-    {title: 'Technology', path: '/tech', icon: Smartphone},
-]
+export const topicIcons: TopicIcon[] = [
+    {title: 'Video games', slug: 'videogames', path: '/topic/videogames', icon: SportsEsportsOutlined, iconPath: SportsEsports},
+    {title: 'Sports', slug: 'sports', path: '/topic/sports', icon: SportsBaseballOutlined, iconPath: SportsBaseball},
+    {title: 'Business', slug: 'business', path: '/topic/business', icon: Business},
+    {title: 'TV', slug: 'tv', path: '/topic/tv', icon: Tv},
+    {title: 'Famous', slug: 'famous', path: '/topic/famous', icon: StarOutline, iconPath: Star},
+    {title: 'Animals / Pets', slug: 'animals-pets', path: '/topic/animals-pets', icon: Pets},
+    {title: 'Anime / Animation', slug: 'anime-animation', path: '/topic/anime-animation', icon: Face3Outlined, iconPath: Face3},
+    {title: 'Art', slug: 'art', path: '/topic/art', icon: ColorLensOutlined, iconPath: ColorLens},
+    {title: 'Cars / Motors / Vehicles', slug: 'vehicles', path: '/topic/vehicles', icon: DirectionsCarOutlined, iconPath: DirectionsCar},
+    {title: 'Crafts', slug: 'crafts', path: '/topic/crafts', icon: AutoAwesomeOutlined, iconPath: AutoAwesome},
+    {title: 'Culture / Races / Ethnicities', slug: 'culture', path: '/topic/culture', icon: Diversity3},
+    {title: 'Ethics / Philosophy', slug: 'ethics-philosophy', path: '/topic/ethics-philosophy', icon: AccountBalanceOutlined, iconPath: AccountBalance},
+    {title: 'Fashion', slug: 'fashion', path: '/topic/fashion', icon: Checkroom},
+    {title: 'Meals / Drinks', slug: 'meals-drinks', path: '/topic/meals-drinks', icon: Restaurant},
+    {title: 'History', slug: 'history', path: '/topic/history', icon: AutoStoriesOutlined, iconPath: AutoStories},
+    {title: 'Hobbies', slug: 'hobbies', path: '/topic/hobbies', icon: Skateboarding},
+    {title: 'Law', slug: 'law', path: '/topic/law', icon: Gavel},
+    {title: 'Learning / Education', slug: 'education', path: '/topic/education', icon: SchoolOutlined, iconPath: School},
+    {title: 'Movies', slug: 'movies', path: '/topic/movies', icon: TheatersOutlined},
+    {title: 'Music', slug: 'music', path: '/topic/music', icon: LibraryMusicOutlined, iconPath: LibraryMusic},
+    {title: 'Places', slug: 'places', path: '/topic/places', icon: PlaceOutlined, iconPath: Place},
+    {title: 'Podcast / Streaming', slug: 'podcast-streaming', path: '/topic/podcast-streaming', icon: SettingsInputAntenna},
+    {title: 'Politics', slug: 'politics', path: '/topic/politics', icon: HowToVoteOutlined, iconPath: HowToVote},
+    {title: 'Programming', slug: 'programming', path: '/topic/programming', icon: Terminal},
+    {title: 'Literature', slug: 'literature', path: '/topic/literature', icon: LocalLibraryOutlined, iconPath: LocalLibrary},
+    {title: 'Religion / Spirituality', slug: 'religion-spirituality', path: '/topic/religion-spirituality', icon: ChurchOutlined, iconPath: Church},
+    {title: 'Science', slug: 'science', path: '/topic/science', icon: ScienceOutlined, iconPath: Science},
+    {title: 'Technology', slug: 'tech', path: '/topic/tech', icon: Smartphone},
+];
+
+export const findTopicBySlug = (slug: string): TopicIcon | undefined =>
+    topicIcons.find((topic) => topic.slug === slug);

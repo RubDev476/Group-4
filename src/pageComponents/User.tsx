@@ -1,48 +1,37 @@
 'use client';
 
-import { useEffect, useState, useContext } from "react";
+import { useContext, useMemo } from "react";
 
 import { NotFound, AvatarImg } from "@/src/components/ui";
 import { Post } from "../components/posts";
 
 import { GlobalContext } from "@/src/app/providers";
 
-import type { AllPostsType, UserDbType } from "@/src/types";
+import type { AllPostsType } from "@/src/types";
 import type { UserProps } from "../types/components-props";
- 
+
 import { USERS } from "../fakeData";
 
 export default function User({ userName }: UserProps) {
-    const [loadingPageUser, setLoadingPageUser] = useState(true);
-    const [user, setUser] = useState<UserDbType | null>(null);
-    const [posts, setPosts] = useState<AllPostsType[] | []>([]);
+    const { allPosts, allUsers, loadingData } = useContext(GlobalContext);
 
-    const {allPosts, loadingData } = useContext(GlobalContext);
+    const user = useMemo(() => {
+        const usersSource = allUsers ?? USERS;
+        return usersSource.find((u) => u.displayName === userName) ?? null;
+    }, [allUsers, userName]);
 
-    useEffect(() => {
-        const getDataUser = async () => {
-            const getUser = USERS.find(user => user.displayName === userName);
+    const posts = useMemo(
+        () => allPosts.filter((post) => post.user.displayName === userName),
+        [allPosts, userName]
+    );
 
-            if(!getUser) return setLoadingPageUser(false);
+    if (loadingData) return null;
 
-            const loadingPost: AllPostsType[] = allPosts.filter(post => post.user.displayName === userName);
-    
-            setUser(getUser);
-            setPosts(loadingPost);
-            setLoadingPageUser(false);
-        }
-
-        if(!loadingData && allPosts.length > 0) getDataUser();
-        if(!loadingData && allPosts.length === 0) setLoadingPageUser(false);
-    }, [allPosts, userName, loadingData])
-
-    if (loadingPageUser && !user) return null;
-
-    if(!loadingPageUser && !user) return <NotFound message="User not found" />;
+    if (!user) return <NotFound message="User not found" />;
 
     const totalLikes = posts.reduce((acc, item) => acc + (item.posts.likes?.length || 0), 0);
 
-    if(!loadingPageUser && user) return (
+    return (
         <div className="user-main-container w-full">
             <div className="profile-banner-card">
                 <div className="profile-cover" />

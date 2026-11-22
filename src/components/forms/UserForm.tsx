@@ -27,15 +27,15 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
     const [imgFile, setImgFile] = useState<File | null | string>(null)
     const [errorImg, setErrorImg] = useState<string>('');
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<UserFormType>();
+    const { register, handleSubmit, formState: { errors } } = useForm<UserFormType>();
 
-    const {setRefresh, loadingData, user} = useContext(GlobalContext);
+    const { loadingData, user } = useContext(GlobalContext);
 
     const router = useRouter();
 
     useEffect(() => {
-        if(!user && !loadingData) router.push('/');
-    }, [loadingData, user])
+        if (!user && !loadingData) router.push('/');
+    }, [loadingData, user, router]);
 
     const onSubmit: SubmitHandler<UserFormType> = async () => {
         if (typeof imgFile === 'string' || !user) return;
@@ -156,14 +156,14 @@ export default function UserForm({ typeForm }: TypeOfFormProps) {
                             />
 
                             {imgFile && (
-                                <button className="bg-hover-2 pointer" onClick={() => setImgFile(null)}>Replace / Cancel</button>
+                                <button type="button" className="bg-hover-2 pointer" onClick={() => setImgFile(null)}>Replace / Cancel</button>
                             )}
                         </div>
 
                         <div className="actions-post">
                             <button className="w-full create-btn pointer" type="submit">{FormActions[typeForm].btnAction}</button>
 
-                            <button className="w-full calcel-btn bg-hover-2 pointer" onClick={() => router.push('/')}>Cancel</button>
+                            <button type="button" className="w-full cancel-btn bg-hover-2 pointer" onClick={() => router.push('/')}>Cancel</button>
                         </div>
                     </div>
                 </form>

@@ -14,7 +14,7 @@ import { AvatarImg, SkeletonUser } from "../ui";
 export default function ImgHero() {
     const { user, setFormModal, setNavModal, popularUsers, loadingPopular } = useContext(GlobalContext);
     const [creatorTab, setCreatorTab] = useState<'popular' | 'recent'>('popular');
-    const [recentActivity] = useState<any[]>(USERS);
+    const [recentActivity] = useState<UserDbType[]>(USERS);
     const router = useRouter();
 
     const handleStartPost = () => {

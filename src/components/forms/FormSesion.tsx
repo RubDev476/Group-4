@@ -12,49 +12,59 @@ export default function FormSesion() {
     const { setFormModal, user, setRefresh, formModal } = useContext(GlobalContext);
 
     const [succes, setSucces] = useState(false);
-    const [errorSubmit, setErrorSubmit] = useState<string>('')
+    const [errorSubmit, setErrorSubmit] = useState<string>('');
+    const [activeFields, setActiveFields] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         if (succes && user) {
             setSucces(false);
 
-            setRefresh({refresh: true, redirectTo: `/u/${user.displayName}`})
+            setRefresh({ refresh: true, redirectTo: `/u/${user.displayName}` });
 
             setFormModal(false);
         }
-    }, [succes, setFormModal, user])
+    }, [succes, setFormModal, setRefresh, user]);
 
     const closeLoginModal = (e: React.MouseEvent<HTMLElement>): void => {
         const target = e.target as HTMLElement;
 
-        //Thanks to the icon this gives an error, better a dataset to avoid so much validation...
-        //console.log(target.className.includes('login-modal'));
-
         if (!target.dataset.set) return;
 
         setFormModal(false);
-    }
+    };
 
-    const select = (e: React.FocusEvent<HTMLInputElement>): void => document.querySelector(`${'.' + e.target.id}`)?.classList.add('active');
+    const select = (e: React.FocusEvent<HTMLInputElement>): void => {
+        const id = e.target.id;
+        if (!id) return;
+        setActiveFields((prev) => ({ ...prev, [id]: true }));
+    };
 
     const blur = (e: React.FocusEvent<HTMLInputElement>): void => {
-        if (e.target.value !== '') return;
+        const id = e.target.id;
+        if (!id || e.target.value !== '') return;
 
-        document.querySelector(`${'.' + e.target.id}`)?.classList.remove('active');
-    }
+        setActiveFields((prev) => ({ ...prev, [id]: false }));
+    };
 
     return (
         <div className={`bg-modal login-modal ${formModal ? 'active' : ''} w-full none`} onClick={closeLoginModal} data-set='modal'>
             <div className="form-container bg-color relative w-full">
-                <button className="all-center pointer bg-hover absolute btn-close" onClick={() => setFormModal(false)}>
+                <button
+                    type="button"
+                    aria-label="Close modal"
+                    className="all-center pointer bg-hover absolute btn-close"
+                    onClick={() => setFormModal(false)}
+                >
                     <Close className="icon" />
                 </button>
 
                 {!formRegister ? (
                     <FormLogin
+                        key="login"
                         select={select}
                         setFormRegister={setFormRegister}
                         blur={blur}
+                        activeFields={activeFields}
                         setSucces={setSucces}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
@@ -62,9 +72,11 @@ export default function FormSesion() {
                     />
                 ) : (
                     <FormRegister
+                        key="register"
                         select={select}
                         setFormRegister={setFormRegister}
                         blur={blur}
+                        activeFields={activeFields}
                         setSucces={setSucces}
                         errorSubmit={errorSubmit}
                         setErrorSubmit={setErrorSubmit}
@@ -72,5 +84,5 @@ export default function FormSesion() {
                 )}
             </div>
         </div>
-    )
+    );
 }

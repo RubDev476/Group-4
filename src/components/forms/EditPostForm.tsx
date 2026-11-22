@@ -18,17 +18,17 @@ export default function EditPostForm({ idPost }: PostProps) {
     const [errorImg, setErrorImg] = useState<string>('');
     const [currentPost, setCurrentPost] = useState<PostTypes | undefined>(undefined);
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<UserFormType>();
+    const { register, handleSubmit, formState: { errors } } = useForm<UserFormType>();
 
     const router = useRouter();
 
-    const {user, setRefresh, allPosts, loadingData} = useContext(GlobalContext);
+    const { user, allPosts, loadingData } = useContext(GlobalContext);
 
     useEffect(() => {
-        if(!loadingData && loadingPage) {
+        if (!loadingData && loadingPage) {
             const getPost = allPosts.find(data => data.posts.id === idPost);
 
-            if (getPost) {
+            if (getPost && user && getPost.posts.idUser === user.uid) {
                 setCurrentPost(getPost.posts);
                 setImgFile(getPost.posts.imgUrl);
             }
@@ -37,7 +37,7 @@ export default function EditPostForm({ idPost }: PostProps) {
         }
 
         if (!loadingPage && (!user || !currentPost)) router.push('/');
-    }, [loadingPage, loadingData, user]);
+    }, [loadingPage, loadingData, user, allPosts, idPost, currentPost, router]);
 
     const onSubmit: SubmitHandler<UserFormType> = async (data) => {
         if (!currentPost) return;
@@ -117,13 +117,13 @@ export default function EditPostForm({ idPost }: PostProps) {
                                 errorImg={errorImg}
                             />
 
-                            {imgFile && <button className="bg-hover-2 pointer" onClick={() => setImgFile(null)}>Replace / Cancel</button>}
+                            {imgFile && <button type="button" className="bg-hover-2 pointer" onClick={() => setImgFile(null)}>Replace / Cancel</button>}
                         </div>
 
                         <div className="actions-post">
                             <button className="w-full create-btn pointer" type="submit">Update post</button>
 
-                            <button className="w-full calcel-btn bg-hover-2 pointer" onClick={() => router.push('/')} type="button">Cancel</button>
+                            <button className="w-full cancel-btn bg-hover-2 pointer" onClick={() => router.push('/')} type="button">Cancel</button>
                         </div>
                     </div>
                 </form>

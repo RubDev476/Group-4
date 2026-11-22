@@ -74,6 +74,15 @@
                 background-color: var(--mf-input-focus-bg);
                 border-color: var(--mf-primary);
                 box-shadow: 0 0 0 3px var(--mf-primary-soft);
+
+                label {
+                    top: -20px;
+                    left: 4px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: var(--mf-text-secondary);
+                    opacity: 1;
+                }
             }
 
             label {

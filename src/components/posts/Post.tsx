@@ -15,6 +15,7 @@ import PostOptions from './PostOptions';
 
 import { GlobalContext } from "@/src/app/providers";
 
+import type { CommentTypes } from '@/src/types';
 import type { PostComponentProps } from '@/src/types/components-props';
 
 export default function Post({ postData, creator }: PostComponentProps) {
@@ -23,7 +24,7 @@ export default function Post({ postData, creator }: PostComponentProps) {
 
     const {setFormModal, user, setAllPosts, allPosts} = useContext(GlobalContext);
 
-    const totalComments = (): number => postData.comments.reduce((total: number, comment: any) => total + (comment.replies.length || 0), postData.comments.length);
+    const totalComments = (): number => postData.comments.reduce((total: number, comment: CommentTypes) => total + (comment.replies.length || 0), postData.comments.length);
 
     const likeToggle = async () => {
         if (!user) return setFormModal(true);

@@ -2,7 +2,7 @@ import { describe, expect, it, vi, afterEach } from 'vitest';
 import { handleLikes } from '@/src/utilities/handleLikes';
 import formatDate from '@/src/utilities/formatDate';
 import themeColors from '@/src/utilities/themeColors';
-import { topicIcons } from '@/src/utilities/asideLeftItems';
+import { findTopicBySlug, topicIcons } from '@/src/utilities/asideLeftItems';
 
 describe('utilities', () => {
     describe('handleLikes', () => {
@@ -88,14 +88,20 @@ describe('utilities', () => {
     });
 
     describe('asideLeftItems (topicIcons)', () => {
-        it('defines 28 topics with valid title, path, and icon', () => {
+        it('defines 28 topics with valid title, slug, path, and icon', () => {
             expect(topicIcons).toHaveLength(28);
 
             for (const topic of topicIcons) {
                 expect(topic.title.length).toBeGreaterThan(0);
-                expect(topic.path.startsWith('/')).toBe(true);
+                expect(topic.slug.length).toBeGreaterThan(0);
+                expect(topic.path).toBe(`/topic/${topic.slug}`);
                 expect(topic.icon).toBeDefined();
             }
+        });
+
+        it('finds existing topics by slug and returns undefined for unknown slugs', () => {
+            expect(findTopicBySlug('videogames')?.title).toBe('Video games');
+            expect(findTopicBySlug('unknown-topic')).toBeUndefined();
         });
     });
 });

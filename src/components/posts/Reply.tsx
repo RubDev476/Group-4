@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useContext, useEffect, useState, useMemo } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
@@ -39,44 +39,53 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
         setAllPosts(updatePosts);
     }
 
-    const saveEditComment = async () => {
-        if (commentEdit === reply.comment) return setEdit(false);
+    const saveEditComment = () => {
+        const trimmed = commentEdit.trim();
+        if (trimmed === reply.comment) {
+            setEdit(false);
+            return;
+        }
 
-        if (!user || commentEdit === '') return;
+        if (!user || trimmed === '') return;
 
-        const { updatePosts } = update_state('edit', user.uid);
+        const { updatePosts } = update_state('edit', user.uid, trimmed);
         setAllPosts(updatePosts);
         setEdit(false);
-    }
+    };
 
-    const deleteComm = async () => {
+    const cancelEdit = () => {
+        setCommentEdit(reply.comment);
+        setEdit(false);
+    };
+
+    const deleteComm = () => {
         if (!user) return;
 
         const { updatePosts } = update_state('delete', user.uid);
         setAllPosts(updatePosts);
         setEdit(false);
-    }
+    };
 
-    const update_state = (type: CommentActions, uid: string) => {        
-        const currentPosts = [...allPosts];
-
+    const update_state = (type: CommentActions, uid: string, editedText?: string) => {
         const currentPost_state: PostTypes = JSON.parse(JSON.stringify(currentPost));
 
-        update_post(type, uid, currentPost_state);
+        update_post(type, uid, currentPost_state, editedText);
 
         const updatePosts = allPosts.map(data => data.posts.id === currentPost.id ? { ...data, posts: currentPost_state } : data);
 
         return {
-            currentPosts,
             updatePosts,
-        }
-    }
+        };
+    };
 
-    const update_post = (type: CommentActions, uid: string, post: PostTypes) => {
+    const update_post = (type: CommentActions, uid: string, post: PostTypes, editedText?: string) => {
         const commentIndex = post.comments.findIndex((currentComment: CommentTypes) => currentComment.id === commentId);
+
+        if (commentIndex === -1) throw new Error('this comment does not exist...');
+
         const replyIndex = post.comments[commentIndex].replies.findIndex((currentReply: ReplyTypes) => currentReply.id === reply.id);
 
-        if(replyIndex === -1 || commentIndex === -1) throw new Error('this reply does not exist...');
+        if (replyIndex === -1) throw new Error('this reply does not exist...');
 
         switch (type) {
             case 'like': {
@@ -87,7 +96,7 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                 break;
             }
             case 'edit': {
-                post.comments[commentIndex].replies[replyIndex].comment = commentEdit;
+                post.comments[commentIndex].replies[replyIndex].comment = editedText ?? commentEdit;
 
                 break;
             }
@@ -99,38 +108,37 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
 
             default: break;
         }
-    }
+    };
 
-    const memoizedHeaderReply = useMemo(() => {
-        if (userReply) return (
-            <div className="header-comment relative flex justify-between w-full">
-                <div className='flex info-creator'>
-                    <Link href={`/u/${userReply.displayName}`} className="user text-color flex align-center">
-                        <AvatarImg
-                            size={30}
-                            fontSize={16}
-                            user={userReply}
-                        />
-
-                        <span className='user-name'>{`@${userReply.displayName}`} </span>
-                    </Link>
-
-                    <p className='time text-opacity relative'>{formatDate(reply.date)}</p>
-                </div>
-
-                {(user && user.uid === reply.idUser) && (
-                    <CommentOptions deleteF={deleteComm} setEdit={setEdit} />
-                )}
-            </div>
-        )
-    }, [user, currentPost, userReply])
+    const handleStartEdit: React.Dispatch<React.SetStateAction<boolean>> = (value) => {
+        setCommentEdit(reply.comment);
+        setEdit(value);
+    };
 
     if (userReply) return (
         <div className="reply-main-container relative flex">
             <div className="line"></div>
 
             <div className="reply-container w-full">
-                {memoizedHeaderReply}
+                <div className="header-comment relative flex justify-between w-full">
+                    <div className='flex info-creator'>
+                        <Link href={`/u/${userReply.displayName}`} className="user text-color flex align-center">
+                            <AvatarImg
+                                size={30}
+                                fontSize={16}
+                                user={userReply}
+                            />
+
+                            <span className='user-name'>{`@${userReply.displayName}`} </span>
+                        </Link>
+
+                        <p className='time text-opacity relative'>{formatDate(reply.date)}</p>
+                    </div>
+
+                    {(user && user.uid === reply.idUser) && (
+                        <CommentOptions deleteF={deleteComm} setEdit={handleStartEdit} />
+                    )}
+                </div>
 
                 <div className="reply">
                     {!edit && <p>{reply.comment}</p>}
@@ -139,9 +147,9 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
                         <textarea
                             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setCommentEdit(e.target.value)}
                             name='edit-reply'
-                            id='edit-reply'
+                            id={`edit-reply-${reply.id}`}
                             className="w-full scroll-bar-style"
-                            defaultValue={reply.comment}
+                            value={commentEdit}
                         />
                     )}
 
@@ -160,9 +168,9 @@ export default function Reply({ reply, currentPost, commentId }: ReplyProps) {
 
                         {edit && (
                             <>
-                                <button className="cancel-btn pointer bg-hover-2" onClick={() => setEdit(false)}>Cancel</button>
+                                <button type="button" className="cancel-btn pointer bg-hover-2" onClick={cancelEdit}>Cancel</button>
 
-                                <button className="comment-btn pointer" onClick={saveEditComment}>Edit</button>
+                                <button type="button" className="comment-btn pointer" onClick={saveEditComment}>Edit</button>
                             </>
                         )}
                     </div>

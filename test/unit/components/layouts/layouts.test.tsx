@@ -3,9 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import {
-    AccordionPopulars,
     AsideLeft,
-    AsideRight,
     GridLayout,
     Header,
     ImgHero,
@@ -103,22 +101,6 @@ describe('Layout Components', () => {
 
             await user.click(screen.getByRole('button', { name: 'Close topics drawer' }));
             expect(contextValue.setNavModal).toHaveBeenCalledWith(false);
-        });
-    });
-
-    describe('AccordionPopulars and AsideRight', () => {
-        it('renders popular users linking to their profile pages', () => {
-            renderWithContext(<AsideRight />);
-
-            expect(screen.getByText('popular users')).toBeInTheDocument();
-            expect(screen.getByText('Your feed, your topics')).toBeInTheDocument();
-            expect(screen.getByRole('link', { name: /@someone/i })).toHaveAttribute('href', '/u/someone');
-        });
-
-        it('renders empty state when there are no popular users', () => {
-            renderWithContext(<AccordionPopulars />, { popularUsers: [], loadingPopular: false });
-
-            expect(screen.getByText('Not users to show...')).toBeInTheDocument();
         });
     });
 

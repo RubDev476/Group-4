@@ -23,12 +23,7 @@ import themeColors from "@/src/utilities/themeColors";
 
 import type { UserOptionsProps } from "@/src/types/components-props";
 
-//This is only if we want to modify the tooltip according to the user's theme
-interface ColoresProps extends TooltipProps {
-    themeMode?: string;
-}
-
-const CustomTooltip = styled(({ className, themeMode, ...props }: ColoresProps) => (
+const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
@@ -54,10 +49,7 @@ export default function UserOptions({ theme, user }: UserOptionsProps) {
 
     return (
         <>
-            <CustomTooltip
-                title="See profile options"
-                themeMode={theme}
-            >
+            <CustomTooltip title="See profile options">
                 <IconButton
                     onClick={handleClick}
                     size="small"

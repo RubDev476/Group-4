@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import Main from '@/src/pageComponents/Main';
 import PostPage from '@/src/pageComponents/Post';
+import TopicPage from '@/src/pageComponents/Topic';
 import UserPage from '@/src/pageComponents/User';
 import { POSTS } from '@/src/fakeData';
 import {
@@ -100,6 +101,37 @@ describe('Page Components Integration', () => {
 
             expect(
                 await screen.findByText("@cyncyncynUwu hasn't published anything yet")
+            ).toBeInTheDocument();
+        });
+
+        it('still renders an existing user profile when allPosts is empty', async () => {
+            renderWithContext(<UserPage userName="cartman" />, { allPosts: [] });
+
+            expect(await screen.findByText('Member since 14/06/2026')).toBeInTheDocument();
+            expect(screen.getByText("@cartman hasn't published anything yet")).toBeInTheDocument();
+        });
+    });
+
+    describe('Topic Page (TopicPage)', () => {
+        it('renders topic header and elegant empty state when a topic has no posts yet', async () => {
+            const user = userEvent.setup();
+            const { contextValue } = renderWithContext(<TopicPage slug="videogames" />, {
+                user: null,
+            });
+
+            expect(screen.getByRole('heading', { name: 'Video games' })).toBeInTheDocument();
+            expect(screen.getByText('No posts related to this topic yet')).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: /Explore all feed/i })).toHaveAttribute('href', '/');
+
+            await user.click(screen.getByRole('button', { name: /Start a post/i }));
+            expect(contextValue.setFormModal).toHaveBeenCalledWith(true);
+        });
+
+        it('renders NotFound when the topic slug does not exist', () => {
+            renderWithContext(<TopicPage slug="non-existent-topic" />);
+
+            expect(
+                screen.getByText('Topic not found. Explore our communities from the main feed.')
             ).toBeInTheDocument();
         });
     });

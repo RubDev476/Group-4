@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useContext, useState, useMemo } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import Link from "next/link";
 
 import { FavoriteBorder, ChatBubbleOutline, Favorite } from '@mui/icons-material';
@@ -30,23 +30,32 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
         setAllPosts(updatePosts);
     }
 
-    const saveEditComment = async () => {
-        if (commentEdit === commentDoc.comment) return setEdit(false);
-        if (!user || commentEdit === '') return;
+    const saveEditComment = () => {
+        const trimmed = commentEdit.trim();
+        if (trimmed === commentDoc.comment) {
+            setEdit(false);
+            return;
+        }
+        if (!user || trimmed === '') return;
 
-        const { updatePosts } = update_state('edit', user.uid);
+        const { updatePosts } = update_state('edit', user.uid, trimmed);
         setAllPosts(updatePosts);
         setEdit(false);
-    }
+    };
 
-    const deleteComm = async () => {
+    const cancelEdit = () => {
+        setCommentEdit(commentDoc.comment);
+        setEdit(false);
+    };
+
+    const deleteComm = () => {
         if (!user) return;
 
         const { updatePosts } = update_state('delete', user.uid);
         setAllPosts(updatePosts);
-    }
+    };
 
-    const update_post = (type: CommentActions, post: PostTypes, uid: string) => {
+    const update_post = (type: CommentActions, post: PostTypes, uid: string, editedText?: string) => {
         const currentIndexComment = post.comments.findIndex((currentComment: CommentTypes) => currentComment.id === commentDoc.id);
 
         if (currentIndexComment === -1) throw new Error('this comment does not exist...');
@@ -60,7 +69,7 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                 break;
             }
             case 'edit': {
-                post.comments[currentIndexComment].comment = commentEdit;
+                post.comments[currentIndexComment].comment = editedText ?? commentEdit;
 
                 break;
             }
@@ -72,31 +81,33 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
 
             default: break;
         }
-    }
+    };
 
-    const update_state = (type: CommentActions, uid: string) => {
-        const currentPosts = [...allPosts];
-
+    const update_state = (type: CommentActions, uid: string, editedText?: string) => {
         const newPost: PostTypes = JSON.parse(JSON.stringify(currentPost));
 
-        update_post(type, newPost, uid);
+        update_post(type, newPost, uid, editedText);
 
         const updatePosts = allPosts.map(data => data.posts.id === currentPost.id ? { ...data, posts: newPost } : data);
 
         return {
-            currentPosts,
             updatePosts
-        }
-    }
+        };
+    };
 
     const replyBtn = () => {
-        if(!user) return setFormModal(true);
+        if (!user) return setFormModal(true);
 
-        setCommentId(commentDoc.id)
-    }
+        setCommentId(commentDoc.id);
+    };
 
-    const meoizedHeaderComment = useMemo(() => {
-        return (
+    const handleStartEdit: React.Dispatch<React.SetStateAction<boolean>> = (value) => {
+        setCommentEdit(commentDoc.comment);
+        setEdit(value);
+    };
+
+    return (
+        <div className="comment-container relative w-full">
             <div className="header-comment relative flex justify-between">
                 <div className='flex info-creator'>
                     <Link href={`/u/${userPost.displayName}`} className="user text-color flex align-center">
@@ -113,26 +124,20 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
                 </div>
 
                 {(user && commentDoc.idUser === user.uid) && (
-                    <CommentOptions deleteF={deleteComm} setEdit={setEdit} />
+                    <CommentOptions deleteF={deleteComm} setEdit={handleStartEdit} />
                 )}
             </div>
-        )
-    }, [currentPost, user])
 
-    return (
-        <div className="comment-container relative w-full">
-            {meoizedHeaderComment}
-
-            <div className={`comment ${commentDoc.replies.length === 0 && 'unique'}`}>
+            <div className={`comment ${commentDoc.replies.length === 0 ? 'unique' : ''}`}>
                 {!edit && <p>{commentDoc.comment}</p>}
 
                 {edit && (
                     <textarea
                         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setCommentEdit(e.target.value)}
                         name='edit-comment'
-                        id='edit-comment'
+                        id={`edit-comment-${commentDoc.id}`}
                         className="w-full scroll-bar-style"
-                        defaultValue={commentDoc.comment}
+                        value={commentEdit}
                     />
                 )}
 
@@ -159,9 +164,9 @@ export default function Comment({commentDoc, setCommentId, currentPost, userPost
 
                     {edit && (
                         <>
-                            <button className="cancel-btn pointer bg-hover-2" onClick={() => setEdit(false)}>Cancel</button>
+                            <button type="button" className="cancel-btn pointer bg-hover-2" onClick={cancelEdit}>Cancel</button>
 
-                            <button className="comment-btn pointer" onClick={saveEditComment}>Edit</button>
+                            <button type="button" className="comment-btn pointer" onClick={saveEditComment}>Edit</button>
                         </>
                     )}
                 </div>
