@@ -3,12 +3,14 @@
 Aplicación web de red social y comunidad enfocada en publicaciones organizadas por **topics** (temáticas de interés), con un feed cronológico limpio y sin ruido algorítmico.
 
 > [!NOTE]
-> **Proyecto optimizado y modernizado con IA Antigravity:** El diseño visual, la arquitectura frontend y la experiencia de usuario de este proyecto fueron mejorados, refactorizados y actualizados con la asistencia de la IA agéntica **Antigravity** (Google DeepMind).
+> **Proyecto optimizado y modernizado con IA Antigravity:** El diseño visual, la arquitectura frontend, la calidad de código y la experiencia de usuario de este proyecto fueron mejorados, refactorizados y actualizados con la asistencia de la IA agéntica **Antigravity** (Google DeepMind).
 
 ---
 
 ## 📌 Tabla de contenidos
 
+- [Enlaces Rápidos](#-enlaces-rápidos)
+- [Notas Previas](#-notas-previas)
 - [Características principales](#-características-principales)
 - [Stack tecnológico](#-stack-tecnológico)
 - [Estructura del proyecto](#-estructura-del-proyecto)
@@ -17,22 +19,36 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 - [Instalación y ejecución local](#-instalación-y-ejecución-local)
 - [Scripts disponibles](#-scripts-disponibles)
 - [Pruebas (Testing)](#-pruebas-testing)
-- [Modernización con IA Antigravity](#-modernización-con-ia-antigravity)
+- [Modernización y refactorización](#-modernización-y-refactorización)
+
+---
+
+## 🔗 Enlaces Rápidos
+
+- **Demo en producción:** [myfeed | Your interests, zero noise](https://group-4-rho.vercel.app/)
+
+---
+
+## 🧭 Notas Previas
+
+- **Frontend desacoplado listo para futuro backend:** Este proyecto se integraba originalmente con Firebase. Actualmente opera con datos locales de demostración (`src/fakeData`) para poder ejecutarse y evaluarse sin dependencias externas, manteniendo intactos todos los formularios y vistas privadas (`/create`, `/edit-post/[id]`, `/edit-profile`) preparados para conectarse a una futura API propia.
+- **Autenticación y rutas privadas:** Por diseño, esta versión no simula una sesión falsa en el cliente. Las rutas privadas redirigen automáticamente a `/` cuando no existe un usuario autenticado, mientras que las interacciones locales (likes, comentarios y respuestas) permanecen cubiertas y verificadas mediante la suite de pruebas.
+- **Páginas de comunidad por topic (`/topic/[slug]`):** Las 28 temáticas de la barra horizontal (*TopicBar*) y del panel lateral (*Topics Drawer*) cuentan con su propia ruta dinámica preparada para filtrar publicaciones por `topic`, mostrando un estado vacío dedicado cuando aún no existen posts asociados y una vista `NotFound` para slugs inexistentes.
 
 ---
 
 ## 🚀 Características principales
 
-- **Feed principal y exploración por topics:** Visualización de publicaciones en cuadrícula responsiva, barra horizontal deslizable de temáticas (*TopicBar*) y panel lateral desplegable (*Topics Drawer*) con 28 comunidades.
+- **Feed principal y exploración por topics:** Visualización de publicaciones en cuadrícula responsiva, barra horizontal deslizable de temáticas (*TopicBar*), panel lateral desplegable (*Topics Drawer*) y páginas dedicadas para las 28 comunidades (`/topic/[slug]`) con estado vacío y manejo de rutas inválidas.
 - **Hero y descubrimiento de creadores:** Banner principal con acceso rápido a creación de publicaciones y explorador de creadores populares y visitados recientemente.
-- **Vista de detalle de publicación (`/p/[id]`):** Visualización completa del post, imagen destacada y sección de discusión con comentarios y respuestas anidadas.
+- **Vista de detalle de publicación (`/p/[id]`):** Visualización completa del post, imagen destacada, acción de compartir enlace al portapapeles y sección de discusión con comentarios y respuestas anidadas.
 - **Perfiles de usuario (`/u/[id]`):** Encabezado de perfil con avatar (imagen o inicial con color personalizado), fecha de registro, métricas de publicaciones y likes, y listado de posts publicados.
 - **Formularios con validación:**
-  - Modal de inicio de sesión y registro (`FormLogin`, `FormRegister`).
-  - Creación y edición de publicaciones con carga de imágenes mediante *drag & drop* (`UserForm`, `EditPostForm`, `Dropzone`).
-  - Edición de perfil y publicación/edición de comentarios y respuestas (`FormComment`).
+  - Modal de inicio de sesión y registro (`FormSession`, `FormLogin`, `FormRegister`).
+  - Creación y edición de publicaciones con campos reutilizables (`PostFields`) y carga de imágenes mediante *drag & drop* con límite de 10 MB (`UserForm`, `EditPostForm`, `Dropzone`).
+  - Edición de perfil y publicación/edición controlada de comentarios y respuestas (`FormComment`).
 - **Modo oscuro y modo claro:** Cambio dinámico de tema mediante `next-themes` y variables SCSS.
-- **Diseño responsivo:** Adaptado a dispositivos móviles, tablets y escritorio.
+- **Accesibilidad y diseño responsivo:** Controles semánticos con atributos ARIA, IDs únicos por menú (`useId`) y adaptación completa a móvil, tablet y escritorio.
 
 ---
 
@@ -49,6 +65,7 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 | Formularios | [React Hook Form](https://react-hook-form.com/) |
 | Carga de archivos | [React Dropzone](https://react-dropzone.js.org/) |
 | Utilidades | `date-fns`, `uuid` |
+| Linting | [ESLint 9](https://eslint.org/) + `eslint-config-next` (flat config) |
 | Testing | [Vitest 5](https://vitest.dev/), [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`, `@vitejs/plugin-react` |
 
 ---
@@ -64,30 +81,32 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 │   ├── app/                   # Rutas de Next.js (App Router) y GlobalContext
 │   │   ├── (global-pages)/
 │   │   │   ├── p/[id]/        # Detalle de publicación
+│   │   │   ├── topic/[slug]/  # Vista de comunidad por topic
 │   │   │   └── u/[id]/        # Perfil de usuario
 │   │   ├── (user-pages)/
 │   │   │   ├── create/        # Crear publicación
 │   │   │   ├── edit-post/[id]/# Editar publicación
 │   │   │   └── edit-profile/  # Editar perfil
-│   │   ├── layout.tsx         # Layout raíz y metadatos
+│   │   ├── layout.tsx         # Layout raíz y metadatos (title template)
 │   │   ├── not-found.tsx      # Página 404
 │   │   ├── page.tsx           # Feed principal
 │   │   └── providers.tsx      # ThemeProvider y estado global (GlobalContext)
 │   ├── components/
-│   │   ├── forms/             # Formularios (login, registro, comentarios, posts, perfil)
-│   │   ├── layouts/           # Header, GridLayout, AsideLeft, AsideRight, ImgHero, TopicBar
-│   │   ├── posts/             # Post, PostOptions, CommentsContainer, Comment, Reply
-│   │   └── ui/                # AvatarImg, NotFound, Skeleton, Spinner, UserOptions
+│   │   ├── forms/             # Dropzone, FormSession, FormLogin, FormRegister, FormComment, UserForm, EditPostForm, PostFields
+│   │   ├── layouts/           # Header, GridLayout, AsideLeft, ImgHero, TopicBar
+│   │   ├── posts/             # Post, PostOptions, CommentsContainer, Comment, CommentOptions, Reply
+│   │   └── ui/                # AvatarImg, NotFound, Skeleton, SkeletonUser, Spinner, StyledMenu, UserOptions
 │   ├── fakeData/              # Usuarios y publicaciones de demostración
-│   ├── pageComponents/        # Vistas cliente principales (Main, Post, User)
+│   ├── pageComponents/        # Vistas cliente principales (Main, Post, Topic, User)
 │   ├── styles/                # Arquitectura SCSS modular (globals, components, pages)
 │   ├── types/                 # Definiciones de tipos TypeScript
-│   └── utilities/             # Helpers (formato de fechas, likes, colores de tema, topics)
+│   └── utilities/             # Helpers (asideLeftItems, formatDate, handleLikes, postMutations, themeColors, useIsMounted)
 ├── test/                      # Pruebas unitarias y de integración (espejo de src/)
 │   ├── setup.ts               # Configuración global de jsdom y mocks de Next.js
 │   ├── utils/                 # Helpers de renderizado con GlobalContext
 │   ├── unit/                  # Pruebas unitarias (components/* y utilities/)
 │   └── integration/           # Pruebas de integración (app/providers y pageComponents/)
+├── eslint.config.mjs
 ├── next.config.mjs
 ├── package.json
 ├── tsconfig.json
@@ -101,11 +120,12 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 | Ruta | Descripción |
 | --- | --- |
 | `/` | Feed principal con hero, barra de topics y listado de publicaciones. |
+| `/topic/[slug]` | Vista de una comunidad temática con posts filtrados, estado vacío elegante o 404 si el topic no existe. |
 | `/p/[id]` | Vista detallada de una publicación y su hilo de comentarios y respuestas. |
 | `/u/[id]` | Perfil público de un usuario y sus publicaciones. |
-| `/create` | Formulario para crear una nueva publicación. |
-| `/edit-post/[id]` | Formulario para editar una publicación existente. |
-| `/edit-profile` | Formulario para editar nombre de usuario y foto de perfil. |
+| `/create` | Formulario para crear una nueva publicación (requiere sesión). |
+| `/edit-post/[id]` | Formulario para editar una publicación propia (requiere sesión y autoría). |
+| `/edit-profile` | Formulario para editar nombre de usuario y foto de perfil (requiere sesión). |
 
 ---
 
@@ -144,6 +164,8 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 | `npm run dev` | Inicia el servidor de desarrollo de Next.js. |
 | `npm run build` | Genera la compilación optimizada para producción. |
 | `npm run start` | Ejecuta la aplicación compilada en modo producción. |
+| `npm run lint` | Ejecuta ESLint 9 con las reglas de Next.js 16 y TypeScript. |
+| `npm run typecheck` | Verifica los tipos de todo el proyecto con `tsc --noEmit`. |
 | `npm test` | Ejecuta toda la suite de pruebas unitarias y de integración con Vitest. |
 | `npm run test:watch` | Ejecuta Vitest en modo interactivo (*watch*) al guardar cambios. |
 
@@ -151,7 +173,7 @@ Aplicación web de red social y comunidad enfocada en publicaciones organizadas 
 
 ## 🧪 Pruebas (Testing)
 
-El proyecto cuenta con una suite de **57 pruebas automatizadas** repartidas en **7 archivos**, implementadas con **Vitest** y **React Testing Library** bajo entorno `jsdom`, siguiendo la misma jerarquía de carpetas que `src/`:
+El proyecto cuenta con una suite de **62 pruebas automatizadas** repartidas en **7 archivos**, implementadas con **Vitest** y **React Testing Library** bajo entorno `jsdom`, siguiendo la misma jerarquía de carpetas que `src/`:
 
 ### Dependencias de testing
 
@@ -164,46 +186,38 @@ El proyecto cuenta con una suite de **57 pruebas automatizadas** repartidas en *
 ### Cobertura de la suite
 
 - **Pruebas unitarias (`test/unit/`):**
-  - `utilities/utilities.test.ts`: `handleLikes`, `formatDate`, `themeColors` y listado de 28 `topicIcons`.
+  - `utilities/utilities.test.ts`: `handleLikes`, `formatDate`, `themeColors`, `topicIcons` / `findTopicBySlug` y mutaciones inmutables en `postMutations`.
   - `components/ui/ui.test.tsx`: `AvatarImg`, `NotFound`, `Skeleton`, `SkeletonUser`, `Spinner` y `UserOptions`.
-  - `components/layouts/layouts.test.tsx`: `Header`, `TopicBar`, `ImgHero`, `AsideLeft`, `AccordionPopulars`, `AsideRight` y `GridLayout`.
-  - `components/forms/forms.test.tsx`: `FormLogin`, `FormRegister`, `FormSesion`, `FormComment`, `UserForm` (`createPost` y `editProfile`), `EditPostForm` y `Dropzone`.
+  - `components/layouts/layouts.test.tsx`: `Header`, `TopicBar`, `ImgHero`, `AsideLeft` y `GridLayout`.
+  - `components/forms/forms.test.tsx`: `FormLogin`, `FormRegister`, `FormSession`, `FormComment`, `UserForm` (`createPost` y `editProfile`), `EditPostForm` y `Dropzone`.
   - `components/posts/posts.test.tsx`: `Post`, `PostOptions`, `Comment`, `Reply` y `CommentsContainer`.
 - **Pruebas de integración (`test/integration/`):**
   - `app/providers.test.tsx`: inicialización de `GlobalContext` con los datos locales y estados de carga.
-  - `pageComponents/pages.test.tsx`: feed principal (`Main`), flujo completo de detalle de publicación (`Post` con likes y comentarios en tiempo real + 404) y vista de perfil (`User` con métricas, publicaciones, estado vacío y 404).
+  - `pageComponents/pages.test.tsx`: feed principal (`Main`), flujo completo de detalle de publicación (`Post` con likes y comentarios en tiempo real + 404), vista de perfil (`User` con métricas, publicaciones, estado vacío y 404) y páginas de topics (`Topic` con estado vacío y 404).
 
-### Ejecutar las pruebas
+### Ejecutar verificaciones
 
 ```bash
-# Ejecución única (CI / verificación)
+# Linter, tipos y pruebas
+npm run lint
+npm run typecheck
 npm test
-
-# Modo watch durante desarrollo
-npm run test:watch
 ```
 
 ---
 
-## 🤖 Modernización con IA Antigravity
+## 🤖 Modernización y refactorización
 
-Este proyecto fue renovado, limpiado y modernizado con la asistencia de **Antigravity (IA)** para consolidar una base frontend moderna, ligera y lista para integrarse con un futuro backend. Los principales cambios aplicados fueron:
+Este proyecto fue renovado, auditado y refactorizado con la asistencia de **Antigravity (IA)** siguiendo principios **SOLID, DRY y KISS** y las mejores prácticas de **Next.js 16 + React 19**:
 
-- **Renovación de interfaz y experiencia de usuario (UI/UX):**
-  - Rediseño integral de la identidad visual (**myfeed**), paleta de colores, variables SCSS (`_color-vars.scss`, `themeColors.ts`) e íconos de aplicación, con soporte refinado para modo oscuro y modo claro.
-  - Creación de la barra horizontal deslizable de temáticas (`TopicBar` y `_topic-bar.scss`) con soporte de arrastre y botones de desplazamiento.
-  - Rediseño del **Header**, el **Hero** tipo *bento* (`ImgHero`) con pestañas de creadores populares/recientes, el panel lateral de temáticas (`AsideLeft`), las tarjetas de publicaciones (`Post`), la vista de detalle (`/p/[id]`), los perfiles (`/u/[id]`) y los formularios.
-  - Ampliación de los datos locales de demostración en `src/fakeData/index.ts` con múltiples usuarios, publicaciones, comentarios y respuestas anidadas.
-- **Eliminación completa de Firebase y código de backend:**
-  - Se eliminaron `src/firebase/` (`config.ts`, `firebase.ts`, `utils.ts`) y `src/hooks/useAuthUser.ts`.
-  - Se desinstaló el paquete `firebase` de `package.json` y `package-lock.json` (82 paquetes removidos) y se quitó `firebasestorage.googleapis.com` de `next.config.mjs`.
-  - Se extrajo la utilidad pura `handleLikes` a `src/utilities/handleLikes.ts`.
-- **Refactorización de tipos y arquitectura frontend:**
-  - Se reemplazaron los tipos acoplados a Firebase (`User`, `DocumentData`) por tipos propios del proyecto (`UserDbType`, `PostTypes`, `CommentTypes`, `ReplyTypes`, `AllPostsType`) en `src/types/index.ts` y `src/types/components-props.ts`.
-  - Se simplificó `src/app/providers.tsx` para operar directamente con los datos locales y se limpiaron todas las llamadas a base de datos en páginas, formularios, publicaciones, layouts y componentes UI, conservando la interactividad local.
-  - Se actualizaron los parámetros de rutas dinámicas (`params` como `Promise`) para compatibilidad total con Next.js 16.
-- **Estandarización de terminología (`niches` → `topics`):**
-  - Se reemplazaron todas las referencias de `niche` / `niches` por `topic` / `topics` en textos visibles, atributos `aria-label` y clases SCSS (`aside.topics-drawer`).
+- **Renovación UI/UX y rutas completas:**
+  - Rediseño visual (**myfeed**), barra horizontal deslizable (`TopicBar`), hero tipo *bento* (`ImgHero`), panel lateral de comunidades (`AsideLeft`) y rutas dedicadas `/topic/[slug]` con estado vacío elegante.
+  - Eliminación completa de Firebase y migración a tipos propios (`UserDbType`, `PostTypes`, `CommentTypes`, `ReplyTypes`, `AllPostsType`).
+- **Calidad de código, TypeScript estricto y ESLint 9:**
+  - Eliminado `typescript.ignoreBuildErrors` en `next.config.mjs`, eliminados componentes muertos (`AsideRight`, `AccordionPopulars`), `console.log`, código comentado y tipos `any`.
+  - Configurado `eslint.config.mjs` (flat config nativo de Next.js 16) pasando con **0 errores y 0 warnings**, adoptando patrones idiomáticos de React 19 (`useSyncExternalStore` en `useIsMounted`, `useWatch` en `FormRegister`, estado derivado sin efectos en cascada).
+- **Arquitectura modular y accesibilidad:**
+  - Extraídos `StyledMenu` (menú MUI compartido), `PostFields` (campos de post reutilizables) y `postMutations.ts` (mutaciones puras e inmutables sin `JSON.parse(JSON.stringify(...))`).
+  - Optimización de `next/image` (`sizes`, lazy loading en feed, eliminación de doble descarga en detalle), `title.template` en metadatos, botones semánticos con atributos ARIA e IDs únicos (`useId`).
 - **Testing automatizado:**
-  - Se configuró **Vitest** + **React Testing Library** (`vitest.config.ts`, `test/setup.ts`) y se implementaron 57 pruebas unitarias y de integración reflejando la jerarquía de `src/`.
----
+  - Suite de **62 pruebas unitarias y de integración** en 7 archivos verificando componentes, utilidades y flujos completos.
